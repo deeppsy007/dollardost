@@ -1,419 +1,976 @@
-
 ---
-const examples = [
-  { dollars: "$100", rupees: "₹8,850", afterFees: "₹8,628.75" },
-  { dollars: "$500", rupees: "₹44,250", afterFees: "₹43,143.75" },
-  { dollars: "$1,000", rupees: "₹88,500", afterFees: "₹86,287.50" },
-  { dollars: "$2,000", rupees: "₹177,000", afterFees: "₹172,575.00" },
-];
+const title =
+  "USD to INR Calculator - Convert Dollars to Indian Rupees | DollarDost";
+
+const description =
+  "Convert US dollars to Indian rupees with our free USD to INR calculator. Estimate exchange rates, transfer fees and your final international payout.";
+
+const examples = [100, 500, 1000, 2000, 5000];
+
+const exampleRate = 88.5;
+const exampleFee = 2.5;
+
+function formatINR(value: number) {
+  return new Intl.NumberFormat("en-IN", {
+    maximumFractionDigits: 2,
+  }).format(value);
+}
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Convert US dollars to Indian rupees with our USD to INR calculator. Estimate currency conversion, payment processing fees and your final payout."
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+
+    <link
+      rel="canonical"
+      href="https://dollardost.pages.dev/usd-to-INR-calculator/"
     />
-    <title>USD to INR Calculator – Convert Dollars to Rupees | DollarDost</title>
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta
+      property="og:url"
+      content="https://dollardost.pages.dev/usd-to-INR-calculator/"
+    />
+    <meta property="og:type" content="website" />
+
+    <meta name="theme-color" content="#0f172a" />
+
+    <style>
+      :root {
+        --primary: #0f172a;
+        --accent: #16a34a;
+        --accent-dark: #15803d;
+        --text: #172033;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --background: #f8fafc;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background: var(--background);
+        line-height: 1.65;
+      }
+
+      a {
+        color: var(--accent-dark);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .container {
+        width: min(1100px, calc(100% - 32px));
+        margin: auto;
+      }
+
+      header {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .header-inner {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .logo {
+        font-size: 23px;
+        font-weight: 850;
+        letter-spacing: -1px;
+        color: var(--primary);
+      }
+
+      .logo span {
+        color: var(--accent);
+      }
+
+      nav {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      nav a {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 48px 0 30px;
+        text-align: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        color: var(--accent-dark);
+        background: #dcfce7;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 750;
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        line-height: 1.15;
+        letter-spacing: -1.5px;
+        margin: 0 auto 16px;
+        max-width: 850px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        max-width: 720px;
+        margin: 0 auto;
+        font-size: 17px;
+      }
+
+      .calculator-card {
+        max-width: 850px;
+        margin: 22px auto 42px;
+        padding: 30px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+      }
+
+      .calculator-card h2 {
+        margin: 0 0 8px;
+        font-size: 25px;
+      }
+
+      .card-subtitle {
+        margin: 0 0 25px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .field input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 11px;
+        font-size: 17px;
+        color: var(--text);
+        background: white;
+        outline: none;
+      }
+
+      .field input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+      }
+
+      .quick-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .quick-buttons button {
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: white;
+        color: var(--text);
+        font-weight: 650;
+        cursor: pointer;
+      }
+
+      .quick-buttons button:hover {
+        border-color: var(--accent);
+        color: var(--accent-dark);
+        background: #f0fdf4;
+      }
+
+      .result-box {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 16px;
+        margin-top: 25px;
+        padding: 22px;
+      }
+
+      .result-label {
+        font-size: 14px;
+        color: #166534;
+        font-weight: 700;
+      }
+
+      .result-value {
+        font-size: clamp(30px, 5vw, 42px);
+        font-weight: 850;
+        color: #166534;
+        letter-spacing: -1px;
+        overflow-wrap: anywhere;
+      }
+
+      .result-caption {
+        color: #166534;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .breakdown {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .breakdown-item {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 15px;
+      }
+
+      .breakdown-item span {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .breakdown-item strong {
+        display: block;
+        font-size: 19px;
+        margin-top: 4px;
+      }
+
+      .notice {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 18px;
+      }
+
+      #error {
+        color: #b91c1c;
+        font-size: 14px;
+        font-weight: 650;
+        margin-top: 12px;
+      }
+
+      .content-section {
+        padding: 25px 0;
+      }
+
+      .content-section h2 {
+        font-size: 27px;
+        letter-spacing: -0.5px;
+        margin: 0 0 15px;
+      }
+
+      .content-section h3 {
+        font-size: 20px;
+        margin: 25px 0 8px;
+      }
+
+      .content-section p {
+        color: #475569;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 550px;
+      }
+
+      th,
+      td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: #f1f5f9;
+        font-size: 13px;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 20px 0;
+      }
+
+      .info-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+      .info-card h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+      }
+
+      .info-card p {
+        font-size: 14px;
+        margin: 0;
+      }
+
+      .formula-box {
+        background: #f1f5f9;
+        padding: 18px;
+        border-radius: 12px;
+        overflow-wrap: anywhere;
+        font-weight: 700;
+      }
+
+      .faq {
+        background: white;
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: 14px;
+        margin: 14px 0;
+      }
+
+      .faq h3 {
+        margin: 0 0 8px;
+      }
+
+      .faq p {
+        margin: 0;
+      }
+
+      .related-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .related-links a {
+        background: white;
+        border: 1px solid var(--border);
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+      }
+
+      footer {
+        margin-top: 45px;
+        background: var(--primary);
+        color: white;
+        padding: 35px 0;
+      }
+
+      footer p {
+        color: #cbd5e1;
+        font-size: 14px;
+      }
+
+      footer a {
+        color: #86efac;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 15px;
+      }
+
+      @media (max-width: 700px) {
+        .header-inner {
+          min-height: 65px;
+        }
+
+        nav {
+          gap: 12px;
+          font-size: 12px;
+        }
+
+        .hero {
+          padding-top: 35px;
+        }
+
+        .hero p {
+          font-size: 15px;
+        }
+
+        .calculator-card {
+          padding: 20px;
+          border-radius: 17px;
+        }
+
+        .form-grid,
+        .breakdown {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .content-section h2 {
+          font-size: 23px;
+        }
+
+        .result-value {
+          font-size: 32px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        nav a:nth-child(2) {
+          display: none;
+        }
+      }
+    </style>
   </head>
 
   <body>
     <header>
-      <a href="/" class="logo">DollarDost<span>.</span></a>
-      <a href="/#calculator" class="nav-link">Currency Calculator →</a>
-    </header>
+      <div class="container header-inner">
+        <a class="logo" href="/">Dollar<span>Dost</span></a>
+
+        <nav>
+          <a href="/">Home</a>
+          <a href="/#calculator">Calculator</a>
+          <a href="/usd-to-inr-calculator/">USD to INR</a>
+        </nav>
+      </div>
+        </header>
 
     <main>
-      <section class="hero">
-        <span class="eyebrow">FREE CURRENCY TOOL</span>
+      <section class="hero container">
+  <span class="eyebrow">India Currency Calculator</span>
 
-        <h1>USD to INR Calculator</h1>
+  <h1>
+    <span
+      role="img"
+      aria-label="India flag"
+      style="display:inline-block;width:24px;height:16px;vertical-align:middle;margin-right:8px;background:linear-gradient(to bottom,#FF9933 33.33%,white 33.33%,white 66.66%,#138808 66.66%);border:1px solid #ddd;"
+    ></span>
+    USD to INR Calculator
+  </h1>
 
-        <p class="subtitle">
-          Convert US dollars into Indian rupees and estimate how much money
-          you'll receive after payment processing fees.
-        </p>
+  <p>
+    Calculate how much Indian Rupees you receive when converting US
+    dollars. Estimate exchange rates, payment fees and your final payout
+    from international clients, freelance platforms or overseas jobs.
+  </p>
+</section>
 
-        <a href="/#calculator" class="button">
-          Calculate Your USD to INR Payout →
-        </a>
+      <section class="container">
+        <div class="calculator-card" id="calculator">
+          <h2>Convert USD to Indian Rupees</h2>
 
-        <p class="note">
-          Use your own exchange rate and fees for a personalized estimate.
-        </p>
+          <p class="card-subtitle">
+            Enter your dollar amount, exchange rate and estimated fee.
+          </p>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="amount">Amount in US dollars (USD)</label>
+              <input
+                id="amount"
+                type="number"
+                min="0"
+                step="0.01"
+                value="1000"
+              />
+            </div>
+
+            <div class="field">
+              <label for="rate">Exchange rate (INR per USD)</label>
+              <input
+                id="rate"
+                type="number"
+                min="0"
+                step="0.0001"
+                value="88.5"
+              />
+            </div>
+
+            <div class="field">
+              <label for="fee">Transfer fee (%)</label>
+              <input
+                id="fee"
+                type="number"
+                min="0"
+                max="100"
+                step="0.01"
+                value="2.5"
+              />
+            </div>
+          </div>
+
+          <div class="quick-buttons">
+            <button type="button" data-amount="100">$100</button>
+            <button type="button" data-amount="500">$500</button>
+            <button type="button" data-amount="1000">$1,000</button>
+            <button type="button" data-amount="2000">$2,000</button>
+            <button type="button" data-amount="5000">$5,000</button>
+          </div>
+
+          <div class="result-box">
+            <div class="result-label">Estimated final payout</div>
+
+            <div class="result-value" id="payout">₹86,287.50</div>
+
+            <div class="result-caption">
+              Indian Rupees after the estimated fee
+            </div>
+
+            <div class="breakdown">
+              <div class="breakdown-item">
+                <span>Gross amount</span>
+                <strong id="gross">₹88,500.00</strong>
+              </div>
+
+              <div class="breakdown-item">
+                <span>Estimated fee in USD</span>
+                <strong id="feeAmount">$25.00</strong>
+              </div>
+
+              <div class="breakdown-item">
+                <span>Net amount after fee</span>
+                <strong id="netAmount">$975.00</strong>
+              </div>
+
+              <div class="breakdown-item">
+                <span>Exchange rate used</span>
+                <strong id="rateDisplay">₹88.50 per $1</strong>
+              </div>
+            </div>
+          </div>
+
+          <div id="error" role="alert"></div>
+
+          <p class="notice">
+            Exchange rates and fees are illustrative, not live market quotes.
+            Actual payouts depend on your provider's exchange rate, fees and
+            applicable charges.
+          </p>
+        </div>
       </section>
 
-      <section class="content">
-        <h2>How to convert USD to INR</h2>
+      <section class="content-section container">
+        <h2>USD to INR Conversion Examples</h2>
 
         <p>
-          Converting US dollars (USD) into Indian rupees (INR) is simple.
-          Multiply the amount in dollars by the exchange rate to calculate
-          its value in rupees.
+          Below are estimated conversions using an illustrative rate of
+          ₹88.50 per US dollar and a 2.5% fee deducted from the dollar amount
+          before conversion.
         </p>
 
-        <div class="formula">
-          INR amount = USD amount × exchange rate
-        </div>
-
-        <p>
-          For example, if the exchange rate is ₹88.50 for every US dollar,
-          $100 is equivalent to ₹8,850 before any fees.
-        </p>
-
-        <h2>USD to INR conversion examples</h2>
-
-        <p>
-          The following examples use an illustrative exchange rate of
-          ₹88.50 per USD and a hypothetical payment fee of 2.5%.
-          Actual exchange rates and fees vary by provider.
-        </p>
-
-        <div class="table-wrapper">
+        <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>USD amount</th>
-                <th>Before fees</th>
-                <th>After 2.5% fee</th>
+                <th>Amount in USD</th>
+                <th>Gross INR</th>
+                <th>Fee (USD)</th>
+                <th>Estimated payout (INR)</th>
               </tr>
             </thead>
 
             <tbody>
-              {examples.map((example) => (
-                <tr>
-                  <td>{example.dollars}</td>
-                  <td>{example.rupees}</td>
-                  <td>{example.afterFees}</td>
-                </tr>
-              ))}
+              {examples.map((usd) => {
+                                const fee = usd * (exampleFee / 100);
+                const net = usd - fee;
+                const grossINR = usd * exampleRate;
+                const payoutINR = net * exampleRate;
+
+                return (
+                  <tr>
+                    <td>${usd.toLocaleString("en-US")}</td>
+                    <td>₹{formatINR(grossINR)}</td>
+                    <td>${fee.toFixed(2)}</td>
+                    <td><strong>₹{formatINR(payoutINR)}</strong></td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
 
-        <h2>Why is my USD to INR payout different?</h2>
+        <p>
+          These figures are examples only. Change the exchange rate and fee
+          above to estimate your own payout.
+        </p>
+      </section>
+
+      <section class="content-section container">
+        <h2>How to Convert US Dollars to Indian Rupees</h2>
 
         <p>
-          The amount you receive in your Indian bank account may differ
-          from the amount shown using a currency exchange rate. Payment
-          providers may charge transaction fees, currency conversion
-          markups or additional fixed fees.
+          If you earn dollars from overseas clients, remote employment,
+          freelancing platforms or online businesses, the amount credited
+          to your Indian account may differ from your original USD
+          earnings.
+        </p>
+
+        <p>
+          The conversion depends on the exchange rate offered by your payment
+          provider and any transaction, withdrawal or conversion fees.
+          DollarDost helps you estimate what you may receive after these
+          deductions.
+        </p>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>1. Enter your earnings</h3>
+            <p>
+              Enter the amount you are receiving in US dollars from your
+              client, platform or employer.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3>2. Enter the exchange rate</h3>
+            <p>
+              Enter the USD to INR rate offered by your bank or payment
+              service.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3>3. Add your fee</h3>
+            <p>
+              Enter the estimated transaction fee to see your payout after
+              deductions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section container">
+        <h2>How Are USD to INR Conversion Fees Calculated?</h2>
+
+        <p>
+          Our calculator estimates your payout using a simple formula. The
+          fee is deducted from the USD amount before the remaining balance
+          is converted into Indian Rupees.
+        </p>
+
+        <div class="formula-box">
+          Net USD = USD Amount − Transfer Fee<br />
+          Final INR = Net USD × Exchange Rate
+        </div>
+
+        <h3>Example: Converting $1,000 to INR</h3>
+
+        <p>
+          Suppose you receive $1,000, use an exchange rate of ₹88.50 per dollar,
+          and pay a 2.5% fee.
         </p>
 
         <ul>
-          <li>
-            <strong>Exchange rate:</strong> The rate your payment provider
-            uses to convert USD into INR.
-          </li>
-
-          <li>
-            <strong>Processing fee:</strong> A percentage deducted from
-            your payment.
-          </li>
-
-          <li>
-            <strong>Fixed fee:</strong> An additional flat charge that may
-            apply to a transaction.
-          </li>
-
-          <li>
-            <strong>Currency markup:</strong> A difference between the
-            market exchange rate and the provider's offered rate.
-          </li>
+          <li>Original amount: $1,000</li>
+          <li>Transfer fee: $25</li>
+          <li>Remaining balance: $975</li>
+          <li>Gross conversion: ₹88,500</li>
+          <li>Estimated final payout: ₹86,287.50</li>
         </ul>
 
-        <h2>Calculate your dollar payout in rupees</h2>
+        <p>
+          Your actual payout may be different if your provider deducts fees
+          separately, applies a different conversion rate or charges a
+          withdrawal fee.
+        </p>
+      </section>
+
+      <section class="content-section container">
+        <h2>Receiving International Payments in India</h2>
 
         <p>
-          Whether you're a freelancer, remote worker, creator or business
-          receiving international payments, knowing your estimated payout
-          can help you understand what you'll actually receive.
+          Indians working with international clients may receive money
+          through banks, digital payment services, freelance platforms and
+          international remittance providers.
         </p>
 
         <p>
-          Enter your payment amount, exchange rate and fees into our
-          calculator to estimate your take-home payout.
+          Before withdrawing your money, compare the total cost of receiving
+          and converting your payment. A provider with a lower transaction
+          fee may still offer a less favorable exchange rate.
         </p>
 
-        <a href="/#calculator" class="button">
-          Open the USD to INR Calculator →
-        </a>
+        <h3>Compare the amount you actually receive</h3>
 
-        <h2>Frequently asked questions</h2>
+        <p>
+          Instead of comparing transaction fees alone, check the Final INR
+          amount credited to your account. Exchange-rate markups, fixed
+          withdrawal fees and other deductions can affect your earnings.
+        </p>
 
-        <details>
-          <summary>How much is $100 in Indian rupees?</summary>
+        <p>
+          This calculator lets you change both the exchange rate and fee
+          percentage to compare different payout scenarios.
+        </p>
+      </section>
+
+      <section class="content-section container">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq">
+          <h3>How much is $100 in Indian Rupees?</h3>
           <p>
-            At an illustrative rate of ₹88.50 per USD, $100 equals ₹8,850
-            before fees. The actual amount depends on the exchange rate
-            offered by your payment provider.
+            At an illustrative exchange rate of ₹88.50 per USD, $100 equals
+            ₹8,850 before fees. With a 2.5% fee deducted first, the estimated
+            payout is ₹8,628.75.
           </p>
-        </details>
-
-        <details>
-          <summary>How much is $1,000 in INR?</summary>
-          <p>
-            At ₹88.50 per USD, $1,000 equals ₹88,500 before fees.
-            If a 2.5% fee applies, the estimated payout is ₹86,287.50.
-          </p>
-        </details>
-
-        <details>
-          <summary>Does this calculator use live exchange rates?</summary>
-          <p>
-            No. The calculator uses a manually entered exchange rate.
-            You can enter the rate quoted by your bank, payment provider
-            or currency exchange service.
-          </p>
-        </details>
-
-        <details>
-          <summary>Why do international payment providers charge fees?</summary>
-          <p>
-            Providers may charge transaction fees for processing
-            international payments and currency conversions. The fee
-            structure varies by provider, payment method and transaction.
-          </p>
-        </details>
-
-        <details>
-          <summary>Can freelancers use this calculator?</summary>
-          <p>
-            Yes. Freelancers, remote workers, creators, consultants and
-            businesses can use it to estimate international payment
-            conversions and deductions.
-          </p>
-        </details>
-
-        <div class="disclaimer">
-          <strong>Disclaimer:</strong> Exchange rates shown in examples are
-          illustrative and are not live market rates or financial advice.
-          Actual payouts may vary depending on your provider's exchange
-          rate, fees and other deductions.
         </div>
+
+        <div class="faq">
+          <h3>How much is $1,000 in INR after a 2.5% fee?</h3>
+          <p>
+            At ₹88.50 per USD, $1,000 converts to ₹88,500 before fees. A 2.5%
+            fee equals $25, leaving $975. Your estimated payout is ₹86,287.50.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Does this calculator use live exchange rates?</h3>
+          <p>
+            No. The exchange rate is an illustrative value that you can
+            change manually. Enter the rate offered by your bank or payment
+            provider for a more relevant estimate.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Why is my actual payout different?</h3>
+          <p>
+            Payment providers may use different exchange rates, transaction
+            fees, withdrawal fees or intermediary charges. The actual amount
+            credited to your account may therefore differ from this estimate.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Can freelancers use this calculator?</h3>
+          <p>
+            Yes. Freelancers, remote workers, online sellers, creators and
+            anyone receiving USD payments can use it to estimate their
+            conversion into Indian Rupees.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>How do I calculate my USD to INR payout?</h3>
+          <p>
+            Subtract your estimated fee from the USD amount, then multiply
+            the remaining dollars by your exchange rate. The result is your
+            estimated INR payout.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section container">
+        <h2>More DollarDost Calculators</h2>
+
+        <p>
+          Explore our other international payout calculators to estimate
+          how much money you may receive in your local currency.
+        </p>
+
+        <div class="related-links">
+          <a href="/usd-to-inr-calculator/">
+            🇮🇳 USD to INR Calculator
+          </a>
+
+          <a href="/usd-to-pkr-calculator/">
+            🇵🇰 USD to PKR Calculator
+          </a>
+
+          <a href="/">
+            🌍 International Currency Calculator
+          </a>
+        </div>
+      </section>
+
+      <section class="content-section container">
+        <h2>About DollarDost</h2>
+
+        <p>
+          DollarDost helps international earners estimate currency
+          conversions, payment fees and payouts. Our tools are designed to
+          make it easier to understand how much money you may receive when
+          earning across borders.
+        </p>
+
+        <p>
+          Our tagline is: <strong>Your dost for dollar earnings.</strong>
+        </p>
       </section>
     </main>
 
     <footer>
-      <a href="/" class="logo">DollarDost<span>.</span></a>
-      <p>Your dost for dollar earnings.</p>
-      <p>© 2026 DollarDost</p>
+      <div class="container">
+        <a class="logo" href="/" style="color:white">
+          Dollar<span>Dost</span>
+        </a>
+
+        <p>
+          Your dost for dollar earnings. Calculate international payouts
+          and understand payment fees.
+        </p>
+
+        <div class="footer-links">
+          <a href="/">Home</a>
+          <a href="/usd-to-inr-calculator/">USD to INR</a>
+          <a href="/usd-to-pkr-calculator/">USD to PKR</a>
+        </div>
+
+        <p>
+          Currency rates and calculations are estimates for informational
+          purposes only and are not financial advice.
+        </p>
+
+        <p>© {new Date().getFullYear()} DollarDost.</p>
+      </div>
     </footer>
+
+    <script>
+      const amountInput = document.querySelector("#amount") as HTMLInputElement;
+      const rateInput = document.querySelector("#rate") as HTMLInputElement;
+      const feeInput = document.querySelector("#fee") as HTMLInputElement;
+
+      const payoutElement = document.querySelector("#payout")!;
+      const grossElement = document.querySelector("#gross")!;
+      const feeAmountElement = document.querySelector("#feeAmount")!;
+      const netAmountElement = document.querySelector("#netAmount")!;
+      const rateDisplayElement = document.querySelector("#rateDisplay")!;
+      const errorElement = document.querySelector("#error")!;
+
+      const INRFormatter = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2,
+      });
+
+      const usdFormatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+      });
+
+      function calculate() {
+        const amount = Number(amountInput.value);
+        const rate = Number(rateInput.value);
+        const feePercent = Number(feeInput.value);
+
+        if (
+          !Number.isFinite(amount) ||
+          !Number.isFinite(rate) ||
+          !Number.isFinite(feePercent) ||
+          amount < 0 ||
+          rate <= 0 ||
+          feePercent < 0 ||
+          feePercent > 100
+        ) {
+          errorElement.textContent =
+            "Please enter a valid amount, exchange rate and fee between 0% and 100%.";
+
+          payoutElement.textContent = "—";
+          grossElement.textContent = "—";
+          feeAmountElement.textContent = "—";
+          netAmountElement.textContent = "—";
+          rateDisplayElement.textContent = "—";
+          return;
+        }
+
+        errorElement.textContent = "";
+
+        const grossINR = amount * rate;
+        const feeUSD = amount * (feePercent / 100);
+        const netUSD = amount - feeUSD;
+        const payoutINR = netUSD * rate;
+
+        payoutElement.textContent = INRFormatter.format(payoutINR);
+        grossElement.textContent = INRFormatter.format(grossINR);
+        feeAmountElement.textContent = usdFormatter.format(feeUSD);
+        netAmountElement.textContent = usdFormatter.format(netUSD);
+
+        rateDisplayElement.textContent =
+          `${INRFormatter.format(rate)} per $1`;
+      }
+
+      amountInput.addEventListener("input", calculate);
+      rateInput.addEventListener("input", calculate);
+      feeInput.addEventListener("input", calculate);
+
+      document.querySelectorAll("[data-amount]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const value = (button as HTMLButtonElement).dataset.amount;
+
+          if (value) {
+            amountInput.value = value;
+            calculate();
+          }
+        });
+      });
+
+      calculate();
+    </script>
   </body>
 </html>
-
-<style>
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f8fafc;
-    color: #172033;
-    line-height: 1.7;
-  }
-
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 7%;
-    background: white;
-    border-bottom: 1px solid #e5eaf0;
-  }
-
-  .logo {
-    font-size: 23px;
-    font-weight: 800;
-    color: #172033;
-    text-decoration: none;
-  }
-
-  .logo span {
-    color: #16a34a;
-  }
-
-  .nav-link {
-    text-decoration: none;
-    font-weight: 600;
-    color: #15803d;
-  }
-
-  main {
-    width: min(850px, 90%);
-    margin: 0 auto;
-  }
-
-  .hero {
-    text-align: center;
-    padding: 65px 15px 45px;
-  }
-
-  .eyebrow {
-    color: #15803d;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 1.5px;
-  }
-
-  h1 {
-    font-size: clamp(32px, 5vw, 48px);
-    line-height: 1.2;
-    margin: 15px 0;
-  }
-
-  .subtitle {
-    color: #64748b;
-    max-width: 650px;
-    margin: 0 auto 25px;
-    font-size: 18px;
-  }
-
-  .button {
-    display: inline-block;
-    background: #16a34a;
-    color: white;
-    text-decoration: none;
-    padding: 14px 22px;
-    border-radius: 10px;
-    font-weight: 700;
-    margin: 10px 0;
-  }
-
-  .button:hover {
-    background: #15803d;
-  }
-
-  .note {
-    color: #64748b;
-    font-size: 13px;
-  }
-
-  .content {
-    background: white;
-    padding: clamp(20px, 5vw, 40px);
-    border: 1px solid #e5eaf0;
-    border-radius: 18px;
-    margin-bottom: 45px;
-  }
-
-  h2 {
-    font-size: 25px;
-    margin-top: 35px;
-    line-height: 1.3;
-  }
-
-  h2:first-child {
-    margin-top: 0;
-  }
-
-  p,
-  li {
-    color: #475569;
-  }
-
-  .formula {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    padding: 18px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 700;
-    border-radius: 10px;
-    color: #166534;
-    margin: 22px 0;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-
-  th,
-  td {
-    text-align: left;
-    padding: 13px;
-    border-bottom: 1px solid #e5eaf0;
-    white-space: nowrap;
-  }
-
-  th {
-    background: #f8fafc;
-    color: #334155;
-  }
-
-  details {
-    padding: 17px 0;
-    border-bottom: 1px solid #e5eaf0;
-  }
-
-  summary {
-    font-weight: 700;
-    cursor: pointer;
-    color: #172033;
-  }
-
-  details p {
-    margin-bottom: 0;
-  }
-
-  .disclaimer {
-    margin-top: 30px;
-    padding: 17px;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    border-radius: 10px;
-    color: #9a3412;
-    font-size: 14px;
-  }
-
-  footer {
-    text-align: center;
-    padding: 30px 15px;
-    background: white;
-    border-top: 1px solid #e5eaf0;
-    color: #64748b;
-  }
-
-  footer p {
-    font-size: 14px;
-  }
-
-  @media (max-width: 600px) {
-    header {
-      padding: 16px 5%;
-    }
-
-    .nav-link {
-      font-size: 13px;
-    }
-
-    .hero {
-      padding-top: 45px;
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    h2 {
-      font-size: 22px;
-    }
-
-    th,
-    td {
-      padding: 10px;
-      font-size: 14px;
-    }
-  }
-</style>
