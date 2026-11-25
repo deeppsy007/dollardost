@@ -203,11 +203,11 @@ const tools = [
         </button>
 
         <div class="input-group">
-          <label for="toCurrency">You receive payout in</label>
+          <option value="EUR" selected>🇪🇺 EUR — Euro</option>
           <select id="toCurrency" class="currency-select">
-            <option value="INR" selected>🇮🇳 INR — Indian Rupee</option>
-            <option value="USD">🇺🇸 USD — US Dollar</option>
-            <option value="EUR">🇪🇺 EUR — Euro</option>
+  <option value="INR">🇮🇳 INR — Indian Rupee</option>
+  <option value="USD" selected>🇺🇸 USD — US Dollar</option>
+  <option value="EUR">🇪🇺 EUR — Euro</option>
             <option value="GBP">🇬🇧 GBP — British Pound</option>
             <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
             <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
@@ -238,10 +238,10 @@ const tools = [
       <div class="input-group">
         <label for="rate">Exchange rate</label>
         <div class="input-box">
-          <input id="rate" type="number" value="88.50" min="0" step="any" />
+          <input id="rate" type="number" value="0.92" min="0" step="any" />
         </div>
         <div class="input-hint" id="rateHint">
-          1 USD = 88.50 INR (illustrative rate)
+          1 USD = 0.92 EUR (illustrative rate)
         </div>
       </div>
 
@@ -455,11 +455,37 @@ const tools = [
   }
 
   function changeCurrencies() {
-    // Reset the exchange rate because the new pair needs a new rate.
-    rateInput.value = "1";
-    updateCurrencyLabels();
-    calculate();
-  }
+  const rates = {
+    USD: 1,
+    EUR: 0.92,
+    GBP: 0.79,
+    INR: 88.50,
+    CAD: 1.38,
+    AUD: 1.52,
+    PHP: 56,
+    PKR: 280,
+    BDT: 122,
+    AED: 3.67,
+    SGD: 1.35,
+    NZD: 1.75,
+    JPY: 150,
+    CHF: 0.88,
+    ZAR: 18,
+    BRL: 5.8,
+    MXN: 18.5,
+    NGN: 1500
+  };
+
+  const source = fromCurrency.value;
+  const destination = toCurrency.value;
+
+  rateInput.value = (
+    rates[destination] / rates[source]
+  ).toFixed(4);
+
+  updateCurrencyLabels();
+  calculate();
+}
 
   fromCurrency.addEventListener("change", changeCurrencies);
   toCurrency.addEventListener("change", changeCurrencies);
