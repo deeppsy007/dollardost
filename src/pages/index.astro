@@ -1,33 +1,76 @@
 ---
+const currencyInfo: Record<
+  string,
+  { icon: string; currency: string; country: string }
+> = {
+  INR: { icon: "🇮🇳", currency: "Indian rupees", country: "India" },
+  PKR: { icon: "🇵🇰", currency: "Pakistani rupees", country: "Pakistan" },
+  PHP: { icon: "🇵🇭", currency: "Philippine pesos", country: "Philippines" },
+  BDT: { icon: "🇧🇩", currency: "Bangladeshi taka", country: "Bangladesh" },
+  NGN: { icon: "🇳🇬", currency: "Nigerian naira", country: "Nigeria" },
+  KES: { icon: "🇰🇪", currency: "Kenyan shillings", country: "Kenya" },
+  ZAR: { icon: "🇿🇦", currency: "South African rand", country: "South Africa" },
+  IDR: { icon: "🇮🇩", currency: "Indonesian rupiah", country: "Indonesia" },
+  VND: { icon: "🇻🇳", currency: "Vietnamese dong", country: "Vietnam" },
+  MXN: { icon: "🇲🇽", currency: "Mexican pesos", country: "Mexico" },
+  BRL: { icon: "🇧🇷", currency: "Brazilian reais", country: "Brazil" },
+  AED: { icon: "🇦🇪", currency: "UAE dirhams", country: "United Arab Emirates" },
+};
+
+const discoveredPageFiles = {
+  ...import.meta.glob("./*-calculator/index.astro"),
+  ...import.meta.glob("./*-tool/index.astro"),
+  ...import.meta.glob("./*-generator/index.astro"),
+};
+
+const discoveredTools = Object.keys(discoveredPageFiles).flatMap((file) => {
+  const slug = file.split("/")[1];
+
+  const currencyMatch = slug.match(/^usd-to-([a-z]{3})-calculator$/);
+
+  if (currencyMatch) {
+    const currencyCode = currencyMatch[1].toUpperCase();
+    const info = currencyInfo[currencyCode];
+
+    return [
+      {
+        icon: info?.icon ?? "💱",
+        title: `USD to ${currencyCode} Calculator`,
+        description: info
+          ? `Convert US dollars to ${info.currency} and estimate your payout after fees.`
+          : `Convert US dollars to ${currencyCode} and estimate your payout after fees.`,
+        tag: info?.country.toUpperCase() ?? currencyCode,
+        link: `/${slug}/`,
+      },
+    ];
+  }
+
+  // Automatically generate cards for other tool and generator pages.
+  const readableName = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+  return [
+    {
+      icon: slug.endsWith("-generator") ? "🧾" : "🛠️",
+      title: readableName,
+      description: `Explore our ${readableName.toLowerCase()} tool.`,
+      tag: slug.endsWith("-generator") ? "FREE GENERATOR" : "FREE TOOL",
+      link: `/${slug}/`,
+    },
+  ];
+});
+
 const tools = [
   {
-    icon: "💸",
-    title: "USD to INR Calculator",
-    description: "Calculate exactly how much money reaches your Indian bank account.",
-    tag: "POPULAR",
+    icon: "🌍",
+    title: "Global Currency Calculator",
+    description:
+      "Calculate international currency conversions, fees and your estimated payout.",
+    tag: "GLOBAL",
     link: "#calculator",
   },
-  {
-    icon: "🧾",
-    title: "Invoice Generator",
-    description: "Create professional invoices for your international clients.",
-    tag: "FREE TOOL",
-    link: "#tools",
-  },
-  {
-    icon: "🌍",
-    title: "Payment Platform Guide",
-    description: "Compare PayPal, Wise, Payoneer and other payment options.",
-    tag: "GUIDE",
-    link: "#tools",
-  },
-  {
-    icon: "📑",
-    title: "FIRA / FIRC Guide",
-    description: "Understand foreign payment certificates and documentation.",
-    tag: "INDIA GUIDE",
-    link: "#tools",
-  },
+  ...discoveredTools,
 ];
 ---
 
@@ -315,32 +358,31 @@ const tools = [
 </section>
 
       <!-- TOOLS -->
-      <section class="tools-section" id="tools">
-        <div class="section-heading tools-heading">
-          <div>
-            <div class="section-eyebrow">YOUR TOOLKIT</div>
-            <h2>Everything your dollar income needs.</h2>
-            <p>Practical tools and guides for your international income journey.</p>
-          </div>
+<section class="tools-section" id="tools">
+  <div class="section-heading tools-heading">
+    <div>
+      <div class="section-eyebrow">YOUR TOOLKIT</div>
+      <h2>Everything your dollar income needs.</h2>
+      <p>Practical tools and calculators for your international income journey.</p>
+    </div>
 
-          <a href="#calculator" class="text-link">Explore tools ↓</a>
+  </div>
+
+  <div class="tools-grid" id="tool-cards">
+    {tools.map((tool) => (
+      <a href={tool.link} class="tool-card">
+        <div class="tool-card-top">
+          <span class="tool-icon">{tool.icon}</span>
+          <span class="tool-tag">{tool.tag}</span>
         </div>
 
-        <div class="tools-grid">
-          {tools.map((tool) => (
-            <a href={tool.link} class="tool-card">
-              <div class="tool-card-top">
-                <span class="tool-icon">{tool.icon}</span>
-                <span class="tool-tag">{tool.tag}</span>
-              </div>
-
-              <h3>{tool.title}</h3>
-              <p>{tool.description}</p>
-              <span class="tool-link">Explore tool →</span>
-            </a>
-          ))}
-        </div>
-      </section>
+        <h3>{tool.title}</h3>
+        <p>{tool.description}</p>
+        <span class="tool-link">Explore tool →</span>
+      </a>
+    ))}
+  </div>
+</section>
 
       <!-- ABOUT -->
       <section class="about-section" id="about">
