@@ -1,0 +1,762 @@
+
+---
+const title = "USD to PKR Calculator – Convert Dollars to Pakistani Rupees | DollarDost";
+const description = "Convert US dollars to Pakistani rupees with our free USD to PKR calculator. Estimate exchange rates, payment fees and your final international payout.";
+
+const examples = [
+  { usd: 100, rate: 280, fee: 2.5 },
+  { usd: 500, rate: 280, fee: 2.5 },
+  { usd: 1000, rate: 280, fee: 2.5 },
+  { usd: 2000, rate: 280, fee: 2.5 },
+  { usd: 5000, rate: 280, fee: 2.5 },
+];
+
+function formatPKR(value) {
+  return new Intl.NumberFormat("en-PK", {
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://dollardost.pages.dev/usd-to-pkr-calculator/" />
+  
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content="https://dollardost.pages.dev/usd-to-pkr-calculator/" />
+  <meta property="og:type" content="website" />
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green: #087f5b;
+      --green-dark: #065f46;
+      --green-light: #ecfdf5;
+      --text: #17212b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --background: #f8fafc;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      color: var(--green-dark);
+      font-weight: 850;
+      font-size: 23px;
+      letter-spacing: -1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hero {
+      padding: 48px 0 28px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--green-dark);
+      background: #dcfce7;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin: 0 0 16px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .calculator-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+      padding: 28px;
+      margin: 12px auto 38px;
+      max-width: 850px;
+    }
+
+    .calculator-card h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .card-subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 16px;
+      background: white;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.12);
+    }
+
+    .quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 22px;
+    }
+
+    .quick-buttons button {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .quick-buttons button:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-light);
+    }
+
+    .result-box {
+      background: var(--green-light);
+      border: 1px solid #bbf7d0;
+      border-radius: 15px;
+      padding: 22px;
+      margin-top: 8px;
+    }
+
+    .result-label {
+      color: var(--green-dark);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .result-amount {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 850;
+      color: var(--green-dark);
+      line-height: 1.3;
+      margin: 6px 0 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .breakdown {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .breakdown-item {
+      border-top: 1px solid #bbf7d0;
+      padding-top: 12px;
+    }
+
+    .breakdown-item span {
+      display: block;
+      color: #46665a;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .breakdown-item strong {
+      font-size: 16px;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 16px 0 0;
+    }
+
+    main section.content-section {
+      padding: 20px 0 30px;
+    }
+
+    .content-section h2 {
+      font-size: 27px;
+      line-height: 1.3;
+      letter-spacing: -0.5px;
+      margin: 0 0 16px;
+    }
+
+    .content-section h3 {
+      font-size: 19px;
+      margin: 24px 0 8px;
+    }
+
+    .content-section p {
+      color: #475569;
+      margin: 0 0 16px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin: 18px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f1f5f9;
+      font-size: 13px;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .info-box {
+      border-left: 4px solid var(--green);
+      background: #f0fdf4;
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin: 20px 0;
+    }
+
+    .info-box p {
+      margin: 0;
+    }
+
+    .link-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .link-card strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .faq {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin: 12px 0;
+      padding: 18px;
+    }
+
+    .faq h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .faq p {
+      margin: 0;
+    }
+
+    footer {
+      margin-top: 32px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      background: white;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (max-width: 650px) {
+      .header-inner {
+        flex-direction: column;
+        justify-content: center;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .hero {
+        padding: 32px 0 20px;
+      }
+
+      .calculator-card {
+        padding: 20px;
+        border-radius: 15px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .breakdown {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .breakdown-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .breakdown-item strong {
+        text-align: right;
+      }
+
+      .content-section h2 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-inner">
+      <a href="/" class="logo">DollarDost</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/usd-to-inr-calculator/">USD to INR</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <span class="eyebrow">International payout calculator</span>
+        <h1>USD to PKR Calculator</h1>
+        <p>
+          Convert US dollars into Pakistani rupees and estimate how much money
+          you receive after payment fees and currency conversion.
+        </p>
+      </section>
+
+      <section class="calculator-card" id="calculator" aria-label="USD to PKR calculator">
+        <h2>Dollar to Pakistani Rupee Calculator</h2>
+        <p class="card-subtitle">
+          Enter your dollar earnings, exchange rate and fee to estimate your payout.
+        </p>
+
+        <div class="field">
+          <label for="usdAmount">Amount you are receiving (USD)</label>
+          <input type="number" id="usdAmount" min="0" step="0.01" value="1000" inputmode="decimal" />
+        </div>
+
+        <div class="quick-buttons" aria-label="Quick amounts">
+          <button type="button" data-amount="100">$100</button>
+          <button type="button" data-amount="500">$500</button>
+          <button type="button" data-amount="1000">$1,000</button>
+          <button type="button" data-amount="5000">$5,000</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="exchangeRate">Exchange rate (1 USD = PKR)</label>
+            <input type="number" id="exchangeRate" min="0" step="0.0001" value="280" inputmode="decimal" />
+          </div>
+
+          <div class="field">
+            <label for="feePercent">Payment fee (%)</label>
+            <input type="number" id="feePercent" min="0" max="100" step="0.01" value="2.5" inputmode="decimal" />
+          </div>
+        </div>
+
+        <div class="result-box" aria-live="polite">
+          <div class="result-label">Estimated amount you receive</div>
+          <div class="result-amount" id="finalPKR">PKR 273,000.00</div>
+
+          <div class="breakdown">
+            <div class="breakdown-item">
+              <span>Gross amount</span>
+              <strong id="grossPKR">PKR 280,000.00</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Payment fee</span>
+              <strong id="feeUSD">$25.00</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Net amount in USD</span>
+              <strong id="netUSD">$975.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <p class="note">
+          This calculator uses the exchange rate and fee you enter.
+          Rates are illustrative and are not live market quotes.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How to convert USD to Pakistani rupees</h2>
+        <p>
+          To convert US dollars (USD) into Pakistani rupees (PKR), multiply
+          the dollar amount by the USD to PKR exchange rate. If a payment
+          provider deducts a fee, subtract that fee before calculating your
+          final payout.
+        </p>
+
+        <div class="info-box">
+          <p>
+            <strong>Conversion formula:</strong> USD amount × exchange rate =
+            PKR amount before fees.
+          </p>
+        </div>
+
+        <p>
+          For example, if you receive $1,000 and use an illustrative exchange
+          rate of 280 PKR per dollar, the gross conversion is 280,000 PKR.
+          With a 2.5% payment fee, the estimated amount after that fee is
+          273,000 PKR.
+        </p>
+
+        <h3>How the calculator works</h3>
+        <p>
+          Enter the amount of USD you expect to receive, your exchange rate,
+          and the payment fee percentage. DollarDost calculates the gross
+          conversion, estimated fee and final amount in Pakistani rupees.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>USD to PKR conversion examples</h2>
+        <p>
+          The examples below use an illustrative rate of 280 PKR per USD and
+          a 2.5% payment fee. Actual rates and fees vary by payment service
+          and transaction.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>USD amount</th>
+                <th>Gross PKR</th>
+                <th>Fee (USD)</th>
+                <th>Estimated payout (PKR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {examples.map((item) => {
+                const gross = item.usd * item.rate;
+                const feeUSD = item.usd * item.fee / 100;
+                const net = (item.usd - feeUSD) * item.rate;
+                return (
+                  <tr>
+                    <td>${item.usd.toLocaleString("en-US")}</td>
+                    <td>PKR {formatPKR(gross)}</td>
+                    <td>${formatPKR(feeUSD)}</td>
+                    <td><strong>PKR {formatPKR(net)}</strong></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Receiving international payments in Pakistan</h2>
+        <p>
+          Freelancers, remote workers, consultants and online creators in
+          Pakistan may receive earnings in US dollars from clients and
+          international platforms. The amount deposited into a bank account
+          can differ from the original payment because of transaction fees,
+          currency conversion spreads and other charges.
+        </p>
+
+        <p>
+          Before withdrawing your earnings, check the exchange rate and
+          charges offered by your payment service. Even a small difference
+          in the exchange rate can affect the final amount you receive,
+          particularly for larger payments.
+        </p>
+
+        <h3>Why your final payout may be different</h3>
+        <p>
+          Payment services may use their own conversion rates. Your bank
+          may also apply charges, and the provider may deduct a transaction
+          fee before transferring your funds. This calculator lets you
+          estimate a fee percentage, but it does not include every possible
+          charge.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Calculate international payouts</h2>
+        <div class="link-card">
+          <strong>USD to INR Calculator</strong>
+          <p>
+            Estimate your dollar earnings converted into Indian rupees
+            after payment fees.
+          </p>
+          <a href="/usd-to-inr-calculator/">Open USD to INR Calculator →</a>
+        </div>
+
+        <div class="link-card">
+          <strong>Global Payout Calculator</strong>
+          <p>
+            Calculate estimated international earnings across different
+            currencies and destinations.
+          </p>
+          <a href="/#calculator">Use the Global Payout Calculator →</a>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Frequently asked questions</h2>
+
+        <div class="faq">
+          <h3>How much is $100 in Pakistani rupees?</h3>
+          <p>
+            At an illustrative exchange rate of 280 PKR per USD, $100 is
+            28,000 PKR before payment fees. Your actual conversion will
+            depend on the rate used by your payment provider.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>How much is $1,000 in PKR?</h3>
+          <p>
+            At an illustrative rate of 280 PKR per USD, $1,000 equals
+            280,000 PKR before fees. With a 2.5% fee deducted from the
+            dollar amount, the estimated payout is 273,000 PKR.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Is this USD to PKR exchange rate live?</h3>
+          <p>
+            No. The default exchange rate is an illustrative example.
+            You can edit the rate to match the rate offered by your bank
+            or payment provider.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>How do I calculate payment fees?</h3>
+          <p>
+            Multiply your payment amount by the fee percentage and divide
+            by 100. For example, a 2.5% fee on $1,000 is $25.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Why do I receive less money than the USD to PKR conversion?</h3>
+          <p>
+            Payment fees, exchange rate spreads, bank charges and
+            intermediary fees may reduce the amount deposited into your
+            account.
+          </p>
+        </div>
+
+        <div class="faq">
+          <h3>Can I use this calculator for freelance earnings?</h3>
+          <p>
+            Yes. You can use it to estimate payouts from freelance work,
+            remote employment, international clients and other USD earnings.
+            Enter the fee and exchange rate that apply to your payment.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="info-box">
+          <p>
+            <strong>Disclaimer:</strong> DollarDost provides estimates for
+            informational purposes only. Exchange rates and payment fees are
+            illustrative and may differ from the rates and charges applied
+            by banks or payment providers.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>© {new Date().getFullYear()} DollarDost. Your dost for dollar earnings.</span>
+      <a href="/">Home</a>
+    </div>
+  </footer>
+
+  <script>
+    const amountInput = document.querySelector("#usdAmount");
+    const rateInput = document.querySelector("#exchangeRate");
+    const feeInput = document.querySelector("#feePercent");
+
+    const finalPKR = document.querySelector("#finalPKR");
+    const grossPKR = document.querySelector("#grossPKR");
+    const feeUSD = document.querySelector("#feeUSD");
+    const netUSD = document.querySelector("#netUSD");
+
+    function formatNumber(value, digits = 2) {
+      return new Intl.NumberFormat("en-PK", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(value);
+    }
+
+    function calculate() {
+      const amount = Number(amountInput.value);
+      const rate = Number(rateInput.value);
+      const feePercent = Number(feeInput.value);
+
+      if (
+        !Number.isFinite(amount) ||
+        !Number.isFinite(rate) ||
+        !Number.isFinite(feePercent) ||
+        amount < 0 ||
+        rate < 0 ||
+        feePercent < 0 ||
+        feePercent > 100
+      ) {
+        finalPKR.textContent = "Please enter valid values";
+        grossPKR.textContent = "—";
+        feeUSD.textContent = "—";
+        netUSD.textContent = "—";
+        return;
+      }
+
+      const gross = amount * rate;
+      const fee = amount * (feePercent / 100);
+      const net = amount - fee;
+      const payout = net * rate;
+
+      finalPKR.textContent = "PKR " + formatNumber(payout);
+      grossPKR.textContent = "PKR " + formatNumber(gross);
+      feeUSD.textContent = "$" + formatNumber(fee);
+      netUSD.textContent = "$" + formatNumber(net);
+    }
+
+    amountInput.addEventListener("input", calculate);
+    rateInput.addEventListener("input", calculate);
+    feeInput.addEventListener("input", calculate);
+
+    document.querySelectorAll("[data-amount]").forEach((button) => {
+      button.addEventListener("click", () => {
+        amountInput.value = button.dataset.amount;
+        calculate();
+      });
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
