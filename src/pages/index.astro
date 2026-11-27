@@ -1,4 +1,5 @@
 ---
+import { toolRegistry } from "../data/tool-registry";
 const currencyInfo: Record<
   string,
   { icon: string; currency: string; country: string }
@@ -61,17 +62,50 @@ const discoveredTools = Object.keys(discoveredPageFiles).flatMap((file) => {
   ];
 });
 
-const tools = [
-  {
-    icon: "🌍",
-    title: "Global Currency Calculator",
-    description:
-      "Calculate international currency conversions, fees and your estimated payout.",
-    tag: "GLOBAL",
-    link: "#calculator",
-  },
-  ...discoveredTools,
-];
+
+const existingPageRoutes = new Set(
+  Object.keys(discoveredPageFiles).map((file) => {
+    const slug = file.split("/")[1];
+    return `/${slug}/`;
+  })
+);
+
+const tools = toolRegistry
+  .filter(
+    (tool) =>
+      tool.status === "live" &&
+      (tool.href === "#calculator" || existingPageRoutes.has(tool.href))
+  )
+      .map((tool) => ({
+    icon: tool.icon,
+    title: tool.title,
+    description: tool.description,
+    category: tool.category,
+    tag:
+      tool.category === "currency-calculators"
+        ? "CURRENCY"
+        : tool.category === "creator-stack"
+          ? "FLAGSHIP"
+          : "FREE TOOL",
+    link: tool.href,
+  }));
+  const categoryConfig = [
+  { id: "tax-compliance", title: "Tax & Compliance" },
+  { id: "payments-documentation", title: "Payments & Documentation" },
+  { id: "business-income-planning", title: "Business & Income Planning" },
+] as const;
+
+const currencyCategoryTools = tools.filter(
+  (tool) => tool.category === "currency-calculators"
+);
+
+const groupedTools = categoryConfig
+  .map((category) => ({
+    ...category,
+    tools: tools.filter((tool) => tool.category === category.id),
+  }))
+  .filter((category) => category.tools.length > 0);
+
 ---
 
 <!doctype html>
@@ -79,11 +113,11 @@ const tools = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-        <meta name="description" content="Calculate international payouts, currency conversions and payment fees. Free tools and guides for freelancers, creators and remote workers worldwide." />
+        <meta name="description" content="Calculate your combined creator income across platforms. Understand platform deductions, payment fees, currency conversion and estimated take-home with DollarDost's free tools for global creators and freelancers." />
     <meta name="google-site-verification" content="UsTVkMkEKQRWKDJj-FRM1l0OUvGnXz-zsuAAHXlTbL0" />
     <meta name="theme-color" content="#0b1728" />
     <link rel="canonical" href="https://dollardost.pages.dev/" />
-    <title>DollarDost | Global Payment & Currency Calculators</title>
+    <title>DollarDost | Creator Income & Global Payment Tools</title>
   </head>
 
   <body>
@@ -93,89 +127,116 @@ const tools = [
         Dollar<span class="logo-green">Dost</span>
       </a>
 
+      
       <nav>
-        <a href="#calculator">Calculator</a>
-        <a href="#tools">Free Tools</a>
+        <a href="/creator-stack-calculator/">Creator Stack</a>
+        <a href="#calculator">Currency Calculator</a>
+        <a href="#tools">All Tools</a>
         <a href="#about">About</a>
       </nav>
 
-      <a href="#calculator" class="nav-button">Calculate Earnings ↗</a>
+      <a href="/creator-stack-calculator/" class="nav-button">
+        Calculate Creator Income →
+      </a>
+
     </header>
 
     <main>
-      <!-- HERO SECTION -->
-      <section class="hero">
-        <div class="hero-content">
-          <div class="badge">
-            <span class="badge-dot"></span>
-            BUILT FOR GLOBAL EARNERS
-          </div>
-
-          <h1>
-            Earn in dollars.<br />
-            <span class="gradient-text">Keep more of what you earn.</span>
-          </h1>
-
-          <p class="hero-description">
-            Your international income shouldn't come with confusing fees.
-            Calculate payouts, understand payment charges and manage your
-            freelance earnings — all in one place.
-          </p>
-
-          
-<div class="hero-buttons">
-  <a href="#calculator" class="primary-button">
-    Calculate my earnings →
-  </a>
-  <a href="#tools" class="secondary-button">
-    Explore free tools
-  </a>
-</div>
-
-<div class="hero-trust">
-  <span>✓ Free tools</span>
-  <span>✓ Made for global earners</span>
-  <span>✓ No sign-up required</span>
-</div>
-</div>
-
-<div class="hero-visual">
-  <div class="floating-label label-top">
-    <span class="green-dot"></span>
-    International payment
-  </div>
-
-  <div class="money-card">
-    <div class="money-card-top">
-      <span>YOUR EARNINGS</span>
-      <span class="card-chip">USD → EUR</span>
+      
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      THE FINANCIAL TOOLKIT FOR GLOBAL CREATORS
     </div>
 
-    <div class="money-amount">$1,000.00</div>
-    <div class="money-subtitle">Monthly freelance income</div>
+    <h1>
+      Multiple income streams.<br />
+      <span class="gradient-text">One clear picture of what you keep.</span>
+    </h1>
 
-    <div class="card-divider"></div>
+    <p class="hero-description">
+      Combine your YouTube, freelance, sponsorship and other creator
+      earnings. Account for platform deductions, payment processing
+      and currency conversion to estimate what you actually take home.
+      Your entire creator income, in one place.
+    </p>
 
-    <div class="conversion-row">
-      <div>
-        <div class="small-label">Estimated conversion</div>
-        <div class="conversion-amount">€920.00</div>
+    <div class="hero-buttons">
+      <a href="/creator-stack-calculator/" class="primary-button">
+        Explore Creator Stack →
+      </a>
+      <a href="#tools" class="secondary-button">
+        Explore all tools
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <span>✓ Multiple income sources</span>
+      <span>✓ Platform and payment costs</span>
+      <span>✓ No sign-up required</span>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="floating-label label-top">
+      <span class="green-dot"></span>
+      YOUR CREATOR INCOME STACK
+    </div>
+
+    <div class="money-card">
+      <div class="money-card-top">
+        <span>COMBINED MONTHLY INCOME</span>
+        <span class="card-chip">CREATOR STACK</span>
       </div>
-      <div class="conversion-icon">↗</div>
+
+      <div class="money-amount">$3,500</div>
+      <div class="money-subtitle">
+        Illustrative income across multiple platforms
+      </div>
+
+      <div class="card-divider"></div>
+
+      <div class="conversion-row">
+        <div>
+          <div class="small-label">YouTube</div>
+          <div class="conversion-amount">$2,000</div>
+        </div>
+        <div class="conversion-icon">+</div>
+      </div>
+
+      <div class="conversion-row">
+        <div>
+          <div class="small-label">Upwork</div>
+          <div class="conversion-amount">$1,000</div>
+        </div>
+        <div class="conversion-icon">+</div>
+      </div>
+
+      <div class="conversion-row">
+        <div>
+          <div class="small-label">Ssemble</div>
+          <div class="conversion-amount">$500</div>
+        </div>
+        <div class="conversion-icon">+</div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <div class="card-bottom">
+        <span>Estimated take-home</span>
+        <span>Calculate yours →</span>
+      </div>
     </div>
 
-    <div class="card-bottom">
-      <span>Illustrative exchange rate</span>
-      <span>€0.92 / $1</span>
+    <div class="floating-label label-bottom">
+      <span class="floating-icon">🌍</span>
+      Your entire creator income, together
     </div>
   </div>
-
-  <div class="floating-label label-bottom">
-    <span class="floating-icon">🌍</span>
-    Know what you actually receive
-  </div>
-</div>
 </section>
+
 
 <!-- TRUST STRIP -->
 <section class="trust-strip">
@@ -205,12 +266,83 @@ const tools = [
 </section>
 
 
+<!-- CREATOR STACK FLAGSHIP -->
+<section class="calculator-section creator-stack-feature" id="creator-stack">
+  <div class="section-heading">
+    <span class="badge">DOLLARDOST FLAGSHIP TOOL</span>
+    <h2>Your entire creator income. Not just one platform.</h2>
+    <p>
+      You don't earn from just one place. Why calculate your income
+      one platform at a time?
+    </p>
+  </div>
+
+  <div class="creator-stack-content">
+    <div class="creator-stack-copy">
+      <h3>One calculator for your whole creator business.</h3>
+
+      <p>
+        Bring your different creator and freelance income sources
+        together. Understand the deductions and costs between what
+        you earn and what you actually receive.
+      </p>
+
+      <ul>
+        <li>Combine multiple income sources in one calculation.</li>
+        <li>Account for platform deductions.</li>
+        <li>Model payment processing fees and payout routes.</li>
+        <li>Understand currency conversion and FX impact.</li>
+        <li>Estimate your combined take-home in your reporting currency.</li>
+      </ul>
+
+      <a href="/creator-stack-calculator/" class="primary-button">
+        Open Creator Stack Calculator →
+      </a>
+
+      <p class="creator-stack-note">
+        Results depend on your inputs, selected routes and available
+        fee verification. Tax reserves are estimates, not tax payable.
+      </p>
+    </div>
+
+    <div class="creator-stack-visual">
+      <div class="creator-stack-visual-label">MULTIPLE INCOME SOURCES</div>
+
+      <div class="creator-income-item">
+        <span>YouTube</span>
+        <strong>Income source 01</strong>
+      </div>
+
+      <div class="creator-income-item">
+        <span>Freelancing</span>
+        <strong>Income source 02</strong>
+      </div>
+
+      <div class="creator-income-item">
+        <span>Other creator income</span>
+        <strong>Income source 03</strong>
+      </div>
+
+      <div class="creator-stack-merge">↓ Combined calculation</div>
+
+      <div class="creator-stack-result">
+        <span>YOUR ESTIMATED TAKE-HOME</span>
+        <strong>One combined result</strong>
+        <small>Platform costs · Payment fees · FX impact</small>
+      </div>
+    </div>
+  </div>
+</section>
+
       <!-- GLOBAL CALCULATOR -->
 <section class="calculator-section" id="calculator">
   <div class="section-heading">
-    <div class="section-eyebrow">GLOBAL PAYOUT CALCULATOR</div>
-    <h2>Know what you <span>actually receive.</span></h2>
-    <p>Calculate international payments in currencies around the world.</p>
+    <div class="section-eyebrow">GLOBAL CURRENCY CONVERTER</div>
+<h2>Convert currencies. Understand your payout.</h2>
+<p>
+  Convert between international currencies and estimate what you'll receive
+  after the payment fees and exchange rate you enter.
+</p>
   </div>
 
   <div class="calculator global-calculator">
@@ -363,26 +495,52 @@ const tools = [
   <div class="section-heading tools-heading">
     <div>
       <div class="section-eyebrow">YOUR TOOLKIT</div>
-      <h2>Everything your dollar income needs.</h2>
-      <p>Practical tools and calculators for your international income journey.</p>
+      <h2>Tools for every part of your creator income.</h2>
+<p>
+  Explore practical calculators and financial tools for creators and
+  freelancers earning across platforms and borders.
+</p>
     </div>
 
   </div>
 
-  <div class="tools-grid" id="tool-cards">
-    {tools.map((tool) => (
-      <a href={tool.link} class="tool-card">
-        <div class="tool-card-top">
-          <span class="tool-icon">{tool.icon}</span>
-          <span class="tool-tag">{tool.tag}</span>
-        </div>
+    {currencyCategoryTools.length > 0 && (
+    <div class="tool-category">
+      <h3 class="tool-category-title">Currency Calculators</h3>
+      <div class="tools-grid">
+        {currencyCategoryTools.map((tool) => (
+          <a href={tool.link} class="tool-card">
+            <div class="tool-card-top">
+              <span class="tool-icon">{tool.icon}</span>
+              <span class="tool-tag">{tool.tag}</span>
+            </div>
+            <h3>{tool.title}</h3>
+            <p>{tool.description}</p>
+            <span class="tool-link">Explore tool →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
-        <h3>{tool.title}</h3>
-        <p>{tool.description}</p>
-        <span class="tool-link">Explore tool →</span>
-      </a>
-    ))}
-  </div>
+  {groupedTools.map((category) => (
+    <div class="tool-category">
+      <h3 class="tool-category-title">{category.title}</h3>
+      <div class="tools-grid">
+        {category.tools.map((tool) => (
+          <a href={tool.link} class="tool-card">
+            <div class="tool-card-top">
+              <span class="tool-icon">{tool.icon}</span>
+              <span class="tool-tag">{tool.tag}</span>
+            </div>
+            <h3>{tool.title}</h3>
+            <p>{tool.description}</p>
+            <span class="tool-link">Explore tool →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  ))}
 </section>
 
       <!-- ABOUT -->
@@ -391,12 +549,12 @@ const tools = [
           <div class="about-icon">🤝</div>
           <div>
             <div class="section-eyebrow">MEET YOUR DOST</div>
-            <h2>Global income. Indian simplicity.</h2>
-            <p>
-              Whether you're a freelancer, YouTuber, designer, developer or
-              creator earning from abroad, DollarDost makes the confusing
-              parts of international payments easier to understand.
-            </p>
+           <h2>Your global income, made easier to understand.</h2>
+<p>
+  Whether you're a YouTuber, freelancer, designer, developer or independent
+  creator, DollarDost helps you understand your earnings, payment costs,
+  currency conversions and the money you actually keep.
+</p>
           </div>
         </div>
       </section>
@@ -408,7 +566,7 @@ const tools = [
           <span class="logo-icon">$</span>
           Dollar<span class="logo-green">Dost</span>
         </a>
-        <p>Your dost for dollar earnings. 🇮🇳</p>
+        <p>Your friendly guide to global creator earnings.</p>
       </div>
 
       <div class="footer-bottom">
@@ -932,6 +1090,150 @@ const tools = [
     line-height: 1.7;
   }
 
+
+  /* CREATOR STACK FLAGSHIP SECTION */
+  .creator-stack-feature {
+    background: linear-gradient(180deg, #f3faf6 0%, #ffffff 100%);
+  }
+
+  .creator-stack-feature .section-heading .badge {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 8px 13px;
+    border-radius: 30px;
+    background: #e0f4e9;
+    color: #138653;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .creator-stack-content {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 55px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .creator-stack-copy h3 {
+    margin: 0 0 15px;
+    color: #172438;
+    font-size: 25px;
+    letter-spacing: -0.7px;
+  }
+
+  .creator-stack-copy > p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .creator-stack-copy ul {
+    display: grid;
+    gap: 13px;
+    margin: 24px 0 28px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .creator-stack-copy li {
+    position: relative;
+    padding-left: 27px;
+    color: #34445a;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .creator-stack-copy li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #13a56a;
+    font-weight: 800;
+  }
+
+  .creator-stack-note {
+    margin-top: 17px;
+    font-size: 11px !important;
+    color: #8491a2 !important;
+  }
+
+  .creator-stack-visual {
+    padding: 30px;
+    border: 1px solid #e4eee8;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 20px 55px #173d2810;
+  }
+
+  .creator-stack-visual-label {
+    margin-bottom: 20px;
+    color: #8491a2;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+  }
+
+  .creator-income-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 17px;
+    border: 1px solid #edf1f4;
+    border-radius: 12px;
+    background: #fbfcfd;
+  }
+
+  .creator-income-item span {
+    color: #25364b;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .creator-income-item strong {
+    color: #8491a2;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .creator-stack-merge {
+    padding: 12px 0;
+    color: #13a56a;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .creator-stack-result {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 23px;
+    border-radius: 15px;
+    background: #172d27;
+    color: white;
+  }
+
+  .creator-stack-result span {
+    color: #a9d8bd;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .creator-stack-result strong {
+    font-size: 22px;
+  }
+
+  .creator-stack-result small {
+    color: #c0d2c9;
+    font-size: 11px;
+  }
+
   .calculator {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1088,6 +1390,16 @@ const tools = [
     font-weight: 700;
     font-size: 13px;
     margin-bottom: 17px;
+  }
+  .tool-category {
+    margin-top: 38px;
+  }
+
+  .tool-category-title {
+    margin: 0 0 18px;
+    color: #172438;
+    font-size: 20px;
+    letter-spacing: -0.4px;
   }
 
   .tools-grid {
@@ -1287,6 +1599,28 @@ const tools = [
       flex-direction: column;
       gap: 20px;
       padding: 25px 8%;
+    }
+
+
+    .creator-stack-content {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .creator-stack-copy h3 {
+      font-size: 22px;
+    }
+
+    .creator-stack-visual {
+      padding: 22px;
+    }
+
+    .creator-income-item {
+      padding: 14px;
+    }
+
+    .creator-stack-result {
+      padding: 20px;
     }
 
     .calculator-section,

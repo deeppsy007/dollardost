@@ -1,0 +1,1514 @@
+---
+const title = "Creator Stack Calculator | Calculate Your Real Creator Income";
+const description =
+  "Calculate creator and freelancer income across platforms, payment providers and currencies. See platform fees, processing costs, FX leakage and estimated take-home income.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dollardost.pages.dev/creator-stack-calculator/" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://dollardost.pages.dev/creator-stack-calculator/" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <style>
+      :root {
+        --primary: #0f172a;
+        --accent: #16a34a;
+        --accent-dark: #15803d;
+        --text: #172033;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --background: #f8fafc;
+        --white: #fff;
+        --warning-bg: #fff7ed;
+        --warning-border: #fed7aa;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--text);
+        background: var(--background);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+      a { color: var(--accent-dark); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .container { width: min(1120px, calc(100% - 32px)); margin: auto; }
+      header { background: var(--white); border-bottom: 1px solid var(--border); }
+      .header-inner {
+        min-height: 68px; display: flex; align-items: center;
+        justify-content: space-between; gap: 20px;
+      }
+      .logo { color: var(--primary); font-size: 23px; font-weight: 850; letter-spacing: -1px; }
+      .logo span { color: var(--accent); }
+      nav { display: flex; gap: 22px; font-size: 14px; font-weight: 650; }
+      nav a { color: var(--text); }
+      .hero { padding: 48px 0 28px; text-align: center; }
+      .eyebrow {
+        display: inline-block; padding: 6px 13px; border-radius: 999px;
+        background: #dcfce7; color: var(--accent-dark);
+        font-size: 12px; font-weight: 800; letter-spacing: .06em;
+      }
+      h1 {
+        max-width: 850px; margin: 15px auto 12px;
+        font-size: clamp(32px, 5vw, 49px); line-height: 1.12; letter-spacing: -1.7px;
+      }
+      .hero p { max-width: 760px; margin: auto; color: var(--muted); font-size: 17px; }
+      .trust-note {
+        max-width: 900px; margin: 22px auto 0; padding: 13px 16px;
+        border: 1px solid var(--warning-border); border-radius: 12px;
+        background: var(--warning-bg); color: #7c2d12; font-size: 13px; text-align: left;
+      }
+      main { padding-bottom: 60px; }
+      .panel {
+        background: var(--white); border: 1px solid var(--border);
+        border-radius: 18px; padding: 24px; margin: 18px auto;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, .045);
+      }
+      .panel h2 { margin: 0 0 6px; font-size: 23px; letter-spacing: -.5px; }
+      .sub { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+      .source-card {
+        border: 1px solid var(--border); border-radius: 14px;
+        padding: 20px; margin: 16px 0; background: #fff;
+      }
+      .source-heading {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 12px; margin-bottom: 16px;
+      }
+      .source-heading h3 { margin: 0; font-size: 18px; }
+      .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+      .field { min-width: 0; }
+      .field.full { grid-column: 1 / -1; }
+      label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
+      input, select {
+        width: 100%; min-height: 44px; padding: 10px 12px;
+        border: 1px solid #cbd5e1; border-radius: 9px;
+        background: #fff; color: var(--text); font: inherit; font-size: 14px;
+      }
+      input:focus, select:focus { outline: 2px solid #86efac; border-color: var(--accent); }
+      input::placeholder { color: #94a3b8; }
+      .hint { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+      .warning {
+        padding: 11px 13px; margin: 13px 0; border-radius: 10px;
+        border: 1px solid var(--warning-border); background: var(--warning-bg);
+        color: #7c2d12; font-size: 13px;
+      }
+      .info {
+        padding: 11px 13px; margin: 13px 0; border-radius: 10px;
+        border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af;
+        font-size: 13px;
+      }
+      .section-title { margin: 23px 0 12px; font-size: 16px; font-weight: 800; }
+      .check-row { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0; }
+      .check-row input { width: 18px; min-height: 18px; margin-top: 3px; }
+      .check-row label { margin: 0; font-weight: 550; }
+      .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      button {
+        min-height: 44px; padding: 10px 17px; border: 0; border-radius: 9px;
+        background: var(--accent); color: #fff; font: inherit; font-weight: 750;
+        cursor: pointer;
+      }
+      button:hover { background: var(--accent-dark); }
+      button.secondary { background: #e2e8f0; color: var(--text); }
+      button.secondary:hover { background: #cbd5e1; }
+      button.remove { min-height: 34px; padding: 6px 10px; background: #fee2e2; color: #991b1b; font-size: 12px; }
+      button:disabled { cursor: not-allowed; opacity: .55; }
+      .primary-button { width: 100%; min-height: 52px; font-size: 16px; margin-top: 18px; }
+      .error {
+        display: none; padding: 13px; margin: 15px 0; border-radius: 10px;
+        border: 1px solid #fecaca; background: #fef2f2; color: #991b1b;
+      }
+      #results { display: none; }
+      .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .metric { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+      .metric span { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
+      .metric strong { display: block; margin-top: 5px; font-size: clamp(18px, 3vw, 25px); overflow-wrap: anywhere; }
+      .metric.highlight { border-color: #86efac; background: #f0fdf4; }
+      .result-list { padding-left: 20px; }
+      .result-list li { margin: 7px 0; }
+      .result-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .result-table th, .result-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+      .result-table th { color: var(--muted); }
+      .disabled-features { color: var(--muted); font-size: 13px; }
+            .content-section {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 28px 30px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.04);
+      }
+
+      .content-section h2 {
+        margin: 0 0 18px;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        font-size: 25px;
+        line-height: 1.3;
+      }
+
+      .content-section h3 {
+        margin: 26px 0 12px;
+        color: #1e293b;
+        font-size: 19px;
+        line-height: 1.4;
+      }
+
+      .content-section p,
+      .content-section li {
+        color: #475569;
+        line-height: 1.75;
+      }
+
+      .content-section ul {
+        padding-left: 22px;
+      }
+
+      .content-section li {
+        margin: 7px 0;
+      }
+
+      .content-section .table-wrap {
+        overflow-x: auto;
+        margin: 18px 0 26px;
+        border: 1px solid #dbe3ed;
+        border-radius: 12px;
+        background: #ffffff;
+      }
+
+      .content-section table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .content-section th,
+      .content-section td {
+        padding: 14px 16px;
+        border: 1px solid #e2e8f0;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .content-section th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-weight: 700;
+      }
+
+      .content-section tbody tr:nth-child(even) {
+        background: #f8fafc;
+      }
+
+      .content-section tbody tr:hover {
+        background: #f1f5f9;
+      }
+
+      .content-section details {
+        margin: 10px 0;
+        padding: 16px 18px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+      }
+
+      .content-section summary {
+        cursor: pointer;
+        color: #1e40af;
+        font-weight: 650;
+        line-height: 1.6;
+      }
+
+      .content-section details[open] {
+        background: #ffffff;
+        border-color: #bfdbfe;
+      }
+
+      .content-section details p {
+              .direct-answer {
+        margin: 28px 0;
+        padding: 22px 24px;
+        border: 1px solid #bfdbfe;
+        border-left: 5px solid #2563eb;
+        border-radius: 12px;
+        background: #eff6ff;
+      }
+
+      .direct-answer h3 {
+        margin: 0 0 12px;
+        color: #1e3a8a;
+        font-size: 19px;
+      }
+
+      .direct-answer p,
+      .direct-answer li {
+        color: #334155;
+      }
+
+      .direct-answer p:last-child {
+        margin-bottom: 0;
+      }
+
+      .direct-answer ol {
+        padding-left: 22px;
+      }
+
+      .direct-answer li {
+        margin: 7px 0;
+        line-height: 1.7;
+      }
+
+      @media (max-width: 700px) {
+        .direct-answer {
+          padding: 18px 16px;
+        }
+      }
+        margin: 12px 0 0;
+      }
+
+      @media (max-width: 700px) {
+        .content-section {
+          padding: 21px 17px;
+          margin: 22px auto;
+          border-radius: 14px;
+        }
+
+        .content-section h2 {
+          font-size: 22px;
+        }
+
+        .content-section th,
+        .content-section td {
+          padding: 11px 12px;
+          min-width: 130px;
+        }
+      }
+      footer { padding: 28px 0; background: var(--primary); color: #cbd5e1; font-size: 13px; }
+      footer a { color: #bbf7d0; }
+      [hidden] { display: none !important; }
+
+      @media (max-width: 700px) {
+        .header-inner { align-items: flex-start; flex-direction: column; padding: 13px 0; }
+        nav { flex-wrap: wrap; gap: 12px 17px; }
+        .hero { padding-top: 34px; }
+        .panel { padding: 17px; }
+        .source-card { padding: 14px; }
+        .form-grid, .result-grid { grid-template-columns: 1fr; }
+        .result-table { display: block; overflow-x: auto; white-space: nowrap; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="container header-inner">
+        <a class="logo" href="/">Dollar<span>Dost</span></a>
+        <nav aria-label="Main navigation">
+          <a href="/">Home</a>
+          <a href="/#tools">Tools</a>
+          <a href="/#about">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero container">
+      <span class="eyebrow">CREATOR STACK CALCULATOR</span>
+      <h1>What do you really keep from your creator income?</h1>
+      <p>
+        Combine income from platforms, clients and digital products.
+        Account for platform deductions, payout fees and currency conversion
+        to estimate what reaches you.
+      </p>
+      <div class="trust-note">
+        <strong>Important:</strong> This calculator uses the fees, rates and
+        assumptions you enter. Unverified provider presets are not treated as
+        confirmed prices. Results are estimates, not financial, legal or tax advice.
+      </div>
+    </section>
+
+    <main class="container">
+      <form id="creator-stack-form" class="panel">
+        <h2>1. Your income sources</h2>
+        <p class="sub">
+          Add each platform, client, affiliate or product income stream separately.
+          You can combine different currencies and payout routes.
+        </p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="reporting-currency">Reporting currency</label>
+            <select id="reporting-currency" required>
+              <option value="" selected disabled>Select reporting currency</option>
+              <option value="INR">INR — Indian Rupee</option>
+              <option value="USD">USD — US Dollar</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — British Pound</option>
+              <option value="PHP">PHP — Philippine Peso</option>
+              <option value="NGN">NGN — Nigerian Naira</option>
+              <option value="PKR">PKR — Pakistani Rupee</option>
+              <option value="BDT">BDT — Bangladeshi Taka</option>
+              <option value="CAD">CAD — Canadian Dollar</option>
+              <option value="AUD">AUD — Australian Dollar</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="income-sources"></div>
+
+        <template id="income-source-template">
+          <article class="source-card">
+            <div class="source-heading">
+              <h3>Income source</h3>
+              <button type="button" class="remove">Remove</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Platform, client or income name</label>
+                <input data-field="name" required maxlength="100" placeholder="e.g. YouTube, freelance client" />
+              </div>
+              <div class="field">
+                <label>Income category</label>
+                <select data-field="category" required>
+                  <option value="" selected disabled>Select a category</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="sponsorship">Sponsorship</option>
+                  <option value="freelance">Freelance</option>
+                  <option value="affiliate">Affiliate</option>
+                  <option value="digital_product">Digital product</option>
+                  <option value="ugc">UGC</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Amount</label>
+                <input data-field="amount" type="number" min="0.01" step="any" required placeholder="Enter amount" />
+              </div>
+              <div class="field">
+                <label>Currency of this amount</label>
+                <select data-field="currency" required>
+                  <option value="" selected disabled>Select amount currency</option>
+                  <option value="USD">USD</option>
+                  <option value="INR">INR</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="PHP">PHP</option>
+                  <option value="NGN">NGN</option>
+                  <option value="PKR">PKR</option>
+                  <option value="BDT">BDT</option>
+                  <option value="CAD">CAD</option>
+                  <option value="AUD">AUD</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>What does this amount represent?</label>
+                <select data-field="amountStage" required>
+                  <option value="contract_amount">Before platform fees / deductions</option>
+                  <option value="after_platform">After platform fees / deductions</option>
+                  <option value="net_received">Already received in my account</option>
+                </select>
+              </div>
+              <div class="field" data-received-currency hidden>
+                <label>Currency already received</label>
+                <select data-field="receivedCurrency">
+                  <option value="USD">USD</option><option value="INR">INR</option>
+                  <option value="EUR">EUR</option><option value="GBP">GBP</option>
+                  <option value="PHP">PHP</option><option value="NGN">NGN</option>
+                  <option value="PKR">PKR</option><option value="BDT">BDT</option>
+                  <option value="CAD">CAD</option><option value="AUD">AUD</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="youtube-question warning" hidden>
+              <strong>YouTube revenue stage — required:</strong>
+              <p>Is this amount before YouTube share, or YouTube Studio estimated revenue?</p>
+              <div class="check-row">
+                <input type="radio" data-field="youtubeStage" value="before_share" />
+                <label>Before YouTube share (gross amount before platform share)</label>
+              </div>
+              <div class="check-row">
+                <input type="radio" data-field="youtubeStage" value="studio_estimate" />
+                <label>YouTube Studio estimated revenue (creator-side estimate after YouTube share)</label>
+              </div>
+              <p class="hint">The second choice prevents the calculator from deducting YouTube's share a second time.</p>
+            </div>
+
+            <div class="platform-fees">
+              <div class="section-title">Platform fee</div>
+              <div class="warning">
+                <strong>Enter your fee.</strong> No verified fee is being assumed
+                for this preset. Check your current contract, account or transaction
+                statement. A blank fee is not zero.
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label>Platform fee (%)</label>
+                  <input data-field="platformFeePercent" type="number" min="0" max="100" step="any" placeholder="Enter your fee percentage" />
+                </div>
+                <div class="field">
+                  <label>Fixed platform fee</label>
+                  <input data-field="platformFixedFee" type="number" min="0" step="any" placeholder="Enter fixed fee (use 0 if none)" />
+                </div>
+                <div class="field">
+                  <label>Fixed fee currency basis</label>
+                  <select data-field="platformFixedFeeCurrency">
+                    <option value="source">Source currency</option>
+                    <option value="payout">Payout currency</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="route-fields">
+              <div class="section-title">Payment and payout route</div>
+              <div class="warning">
+                <strong>Enter your own route details.</strong> Provider names are
+                not fee or rate confirmations. Reference rate, FX markup and
+                processing fees must come from your current account or transaction.
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label>Payment provider</label>
+                  <input data-field="providerName" required placeholder="Enter provider name" />
+                </div>
+                <div class="field">
+                  <label>Payout country code</label>
+                  <input data-field="payoutCountryCode" required minlength="2" maxlength="2" pattern="[A-Za-z]{2}" placeholder="e.g. IN" />
+                </div>
+                <div class="field">
+                  <label>Payout currency</label>
+                  <select data-field="payoutCurrency" required>
+                    <option value="INR" selected>INR</option><option value="USD">USD</option>
+                    <option value="EUR">EUR</option><option value="GBP">GBP</option>
+                    <option value="PHP">PHP</option><option value="NGN">NGN</option>
+                    <option value="PKR">PKR</option><option value="BDT">BDT</option>
+                    <option value="CAD">CAD</option><option value="AUD">AUD</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Reference exchange rate (source → payout)</label>
+                  <input data-field="referenceExchangeRate" type="number" min="0.0000001" step="any" required placeholder="Enter rate from your source" />
+                </div>
+                <div class="field">
+                  <label>FX markup (%)</label>
+                  <input data-field="fxMarkupPercent" type="number" min="0" max="99.999999" step="any" required placeholder="Enter markup; use 0 if none" />
+                </div>
+                <div class="field">
+                  <label>Processing fee (%)</label>
+                  <input data-field="processingPercent" type="number" min="0" max="100" step="any" placeholder="Enter processing percentage" />
+                </div>
+                <div class="field">
+                  <label>Fixed processing fee</label>
+                  <input data-field="processingFixed" type="number" min="0" step="any" placeholder="Enter fixed fee" />
+                </div>
+                <div class="field">
+                  <label>Fixed processing fee currency</label>
+                  <select data-field="processingFixedCurrency">
+                    <option value="source">Source currency</option>
+                    <option value="payout">Payout currency</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Processing fee basis</label>
+                  <select data-field="processingBasis">
+                    <option value="source_amount">Source amount</option>
+                    <option value="payout_amount">Payout amount</option>
+                  </select>
+                </div>
+              </div>
+              <div class="check-row">
+                <input type="checkbox" data-field="noProcessingFee" />
+                <label>I checked my route and confirmed there is no processing fee.</label>
+              </div>
+              <p class="hint">If you do not know the processing fee, do not check this box. Find the current fee first.</p>
+            </div>
+
+            <div class="field source-country">
+              <div class="section-title">Client and source details</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label>Client / payer country code</label>
+                  <input data-field="clientCountryCode" required minlength="2" maxlength="2" pattern="[A-Za-z]{2}" placeholder="e.g. US" />
+                </div>
+                <div class="field">
+                  <label>Client type</label>
+                  <select data-field="clientType">
+                    <option value="direct_client">Direct client</option>
+                    <option value="platform">Platform</option>
+                    <option value="brand">Brand</option>
+                    <option value="affiliate_network">Affiliate network</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Is this a US-source payment?</label>
+                  <select data-field="isUsSource">
+                    <option value="unknown">Not established / unsure</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+              </div>
+              <p class="hint">Do not infer US-source status from the payer's country alone. Establish it from the applicable tax documentation.</p>
+            </div>
+
+            <div class="section-title">Reporting-currency conversion</div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Source currency → reporting currency rate</label>
+                <input data-field="sourceReportingRate" type="number" min="0.0000001" step="any" placeholder="Enter rate; not needed for same currency" />
+                <p class="hint">Use the rate for 1 unit of source currency in your reporting currency.</p>
+              </div>
+              <div class="field payout-reporting-field">
+                <label>Payout currency → reporting currency rate</label>
+                <input data-field="payoutReportingRate" type="number" min="0.0000001" step="any" placeholder="Enter rate; not needed for same currency" />
+                <p class="hint">Use the rate for 1 unit of payout currency in your reporting currency.</p>
+              </div>
+            </div>
+          </article>
+        </template>
+
+        <div class="button-row">
+          <button type="button" class="secondary" id="add-income-source">+ Add another income source</button>
+        </div>
+
+        <div class="section-title">2. Optional tax reserve planning</div>
+        <div class="info">
+          This is an optional user-entered planning reserve, not a tax calculation
+          or tax payable amount. Do not use a tax reference preset unless its
+          converter returns verified and you have independently confirmed eligibility.
+        </div>
+        <div class="check-row">
+          <input id="tax-enabled" type="checkbox" />
+          <label for="tax-enabled">Include a user-entered tax reserve estimate</label>
+        </div>
+        <div id="tax-fields" class="form-grid" hidden>
+          <div class="field">
+            <label for="tax-percent">My planning reserve (%)</label>
+            <input id="tax-percent" type="number" min="0" max="100" step="any" placeholder="Enter your own reserve percentage" />
+          </div>
+          <div class="field">
+            <label for="tax-base">Apply reserve to</label>
+            <select id="tax-base">
+              <option value="amount_received">Amount received</option>
+              <option value="gross">Gross income (only when gross is known for all sources)</option>
+            </select>
+          </div>
+          <div class="field full">
+            <div class="check-row">
+              <input id="tax-eligibility-confirmed" type="checkbox" />
+              <label for="tax-eligibility-confirmed">
+                I have independently confirmed the tax treatment and my eligibility
+                for the planning assumption I am entering.
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div id="form-error" class="error" role="alert"></div>
+        <button class="primary-button" type="submit">Calculate my Creator Stack</button>
+      </form>
+
+      <section id="results" class="panel" aria-live="polite">
+        <h2>3. Your estimated Creator Stack</h2>
+        <p class="sub">Calculated from the information and assumptions you entered.</p>
+        <div id="result-metrics" class="result-grid"></div>
+        <h3 class="section-title">Income source breakdown</h3>
+        <div id="source-breakdown"></div>
+        <h3 class="section-title">Where money is leaking</h3>
+        <div id="leak-breakdown"></div>
+        <h3 class="section-title">Compliance checklist</h3>
+        <div id="compliance-breakdown"></div>
+        <p class="disabled-features">
+          What-if comparisons: not available yet. Export: not available yet.
+          These features remain disabled.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How the Creator Stack Calculator works</h2>
+        <p>
+          Creator income can pass through several separate deductions before it
+          reaches your bank account. This calculator keeps platform fees,
+          payment processing fees and foreign-exchange costs separate.
+        </p>
+        <ul>
+          <li><strong>Platform fees:</strong> deductions applied before the payout route when your entered amount is a contract or gross amount.</li>
+          <li><strong>Payment processing:</strong> fees charged by the payment provider or payout route.</li>
+          <li><strong>FX cost:</strong> the difference between the reference exchange rate and the rate after your entered markup.</li>
+          <li><strong>Estimated take-home:</strong> the amount remaining after the modeled deductions and any optional planning reserve.</li>
+        </ul>
+        <p>
+          If an amount is already after platform fees, select that stage. If it
+          has already reached your account, select “Already received” so the
+          calculator does not deduct payout fees or convert it again.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What is the Creator Stack Calculator?</h2>
+        <p>
+          The Creator Stack Calculator helps you understand your income as
+          one combined picture instead of treating every platform or client
+          payment separately. If you earn through content platforms,
+          freelance marketplaces, sponsorships or other creator work, you
+          can model those income sources together.
+        </p>
+        <p>
+          The goal is to estimate what remains after the deductions you
+          enter, including applicable platform fees, payment processing
+          costs and currency conversion impact. It is a planning tool:
+          actual payouts depend on the fees, exchange rates and payment
+          arrangements that apply to your transactions.
+        </p>
+
+        <h3>Income sources you can bring together</h3>
+        <p>
+          Your creator business may earn money from several different
+          activities. Examples include:
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Income source</th>
+                <th>Examples</th>
+                <th>What to consider</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Video and content platforms</td>
+                <td>YouTube and other content platforms</td>
+                <td>Whether the amount is before or after platform deductions</td>
+              </tr>
+              <tr>
+                <td>Freelance marketplaces</td>
+                <td>Upwork and similar marketplaces</td>
+                <td>Marketplace fees and the stage at which income is entered</td>
+              </tr>
+              <tr>
+                <td>Direct client work</td>
+                <td>Design, development, consulting and writing projects</td>
+                <td>Payment-provider fees and currency conversion</td>
+              </tr>
+              <tr>
+                <td>Sponsorships and partnerships</td>
+                <td>Brand deals and creator collaborations</td>
+                <td>Whether the entered amount includes any deductions</td>
+              </tr>
+              <tr>
+                <td>Other creator income</td>
+                <td>Digital products and other independent work</td>
+                <td>The actual payment and fee arrangement</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Where can money be deducted?</h3>
+        <p>
+          Money can pass through more than one stage before reaching your
+          account. Keeping these stages separate helps avoid applying the
+          same deduction twice.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>What it means</th>
+                <th>What to check</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Platform deductions</td>
+                <td>A fee or share deducted by the platform or marketplace</td>
+                <td>Whether your entered income is before or after this deduction</td>
+              </tr>
+              <tr>
+                <td>Payment processing</td>
+                <td>A charge applied by a payment provider or payout route</td>
+                <td>The fee amount and fee basis you enter</td>
+              </tr>
+              <tr>
+                <td>Currency conversion</td>
+                <td>The impact of converting between the income currency and payout currency</td>
+                <td>Your reference exchange rate and entered FX markup</td>
+              </tr>
+              <tr>
+                <td>Optional planning reserve</td>
+                <td>An amount you choose to set aside for planning</td>
+                <td>Your own entered reserve; it is not a tax calculation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Choose the correct income stage</h3>
+        <p>
+          One of the most important inputs is the stage at which you enter
+          an income amount. The same income figure can produce different
+          results depending on whether platform deductions have already
+          happened.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Your income stage</th>
+                <th>Meaning</th>
+                <th>Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Before platform fees</td>
+                <td>The amount is entered before the platform deduction</td>
+                <td>A platform fee may still need to be modeled</td>
+              </tr>
+              <tr>
+                <td>After platform fees</td>
+                <td>The platform deduction has already been applied</td>
+                <td>Do not deduct that platform fee again</td>
+              </tr>
+              <tr>
+                <td>Already received</td>
+                <td>The money has already reached your account</td>
+                <td>Do not apply payout fees or currency conversion again</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>How to understand your results</h3>
+        <p>
+          The calculator presents a combined estimate and a breakdown
+          of the modeled income and deductions. Read the figures together
+          rather than treating the final number as a guaranteed bank payout.
+        </p>
+        <ul>
+          <li>
+            <strong>Income source breakdown:</strong> shows how each entered
+            income source contributes to the combined calculation.
+          </li>
+          <li>
+            <strong>Where money is leaking:</strong> helps identify the
+            platform, processing and FX costs included in your inputs.
+          </li>
+          <li>
+            <strong>Estimated take-home:</strong> shows the modeled amount
+            remaining after applicable entered deductions and any optional
+            planning reserve.
+          </li>
+          <li>
+            <strong>Compliance checklist:</strong> highlights items to
+            consider; it is not a legal or tax determination.
+          </li>
+        </ul>
+
+        <h3>Who can use this calculator?</h3>
+        <p>
+          The Creator Stack Calculator is designed for people whose income
+          comes from more than one platform, client or creator activity.
+          This can include YouTubers, streamers, designers, developers,
+          writers, consultants, independent professionals and creators
+          working with international brands.
+        </p>
+        <p>
+          It can also help someone with a single income source understand
+          the different costs between an earned amount and the amount
+          received.
+        </p>
+
+        <h3>Example: combining different income streams</h3>
+        <p>
+          Imagine a creator enters income from YouTube, freelance work and
+          another creator platform. The calculator brings those entries
+          together so the person can examine their combined income and
+          the deductions modeled for each source.
+        </p>
+        <p>
+          The example below illustrates the structure only. It does not
+          assume any platform fee, payment-provider charge or exchange
+          rate.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Income source</th>
+                <th>Illustrative entered amount</th>
+                <th>What to review</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>YouTube</td>
+                <td>2,000</td>
+                <td>Whether the amount is before or after YouTube's share</td>
+              </tr>
+              <tr>
+                <td>Freelance work</td>
+                <td>1,000</td>
+                <td>Whether marketplace fees have already been deducted</td>
+              </tr>
+              <tr>
+                <td>Other creator income</td>
+                <td>500</td>
+                <td>The payment route and applicable entered costs</td>
+              </tr>
+              <tr>
+                <td><strong>Combined income</strong></td>
+                <td><strong>3,500</strong></td>
+                <td>Before any additional modeled deductions</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          These amounts are illustrative and use no specified currency.
+          Your actual result depends on the currencies, income stages,
+          fees and exchange rates you enter.
+        </p>
+        <div class="direct-answer">
+          <h3>How do you calculate combined creator income after fees?</h3>
+          <p>
+            To estimate combined creator income after fees, enter each
+            platform, client or creator payment separately. Select the
+            correct income stage, provide applicable fee information,
+            and enter currency conversion details where needed. The
+            Creator Stack Calculator combines the modeled results using
+            the information you provide.
+          </p>
+          <ol>
+            <li>Add each income source separately.</li>
+            <li>
+              Select whether the amount is before platform fees,
+              after platform fees or already received.
+            </li>
+            <li>
+              Enter applicable payment processing fees using verified
+              information or your own fee details.
+            </li>
+            <li>
+              Enter the relevant currencies and exchange-rate details
+              when conversion is required.
+            </li>
+            <li>
+              Calculate your combined estimate and review the
+              income-source and deduction breakdowns.
+            </li>
+          </ol>
+          <p>
+            Do not apply a platform deduction again if it has already
+            been removed from the amount you entered.
+          </p>
+        </div>
+
+        <div class="direct-answer">
+          <h3>How do payment fees and currency conversion affect creator take-home?</h3>
+          <p>
+            Payment fees and currency conversion can reduce the amount
+            you receive from creator income. A payment provider may
+            charge processing or withdrawal fees, while currency
+            conversion can affect the final amount through the exchange
+            rate and any FX markup you enter.
+          </p>
+          <p>
+            The calculator models the applicable costs from your inputs.
+            It does not automatically know every provider's current
+            charges or guarantee that your bank will use the same
+            exchange rate. Check actual provider pricing and transaction
+            statements before relying on an estimate.
+          </p>
+        </div>
+
+        <h3>Important assumptions and limitations</h3>
+        <ul>
+          <li>
+            Enter accurate fee information. A result is only as reliable
+            as the inputs and available fee verification.
+          </li>
+          <li>
+            Do not enter a platform deduction again if it has already
+            been removed from the income amount.
+          </li>
+          <li>
+            Exchange-rate estimates may differ from the rate applied by
+            your bank or payment provider.
+          </li>
+          <li>
+            An optional reserve is a planning assumption, not tax payable
+            or a tax liability calculation.
+          </li>
+          <li>
+            The calculator does not guarantee the amount that will arrive
+            in your bank account.
+          </li>
+          <li>
+            What-if and export features are currently disabled.
+          </li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="faqs">
+        <h2>Frequently asked questions</h2>
+
+        <details>
+          <summary>What is the Creator Stack Calculator?</summary>
+          <p>
+            It is a calculator for bringing multiple creator and freelance
+            income sources into one combined estimate, while modeling
+            applicable platform deductions, payment costs and FX impact
+            from the information you provide.
+          </p>
+        </details>
+
+        <details>
+          <summary>Can I combine YouTube and freelance income?</summary>
+          <p>
+            Yes. You can enter different income sources in the same
+            calculation. Make sure you select the correct income stage
+            for each source so deductions are not counted twice.
+          </p>
+        </details>
+
+        <details>
+          <summary>Can I add income from multiple platforms?</summary>
+          <p>
+            The calculator is designed to model multiple income sources.
+            Add each source separately and provide its relevant income,
+            currency and fee information.
+          </p>
+        </details>
+
+        <details>
+          <summary>Does the calculator automatically know every platform fee?</summary>
+          <p>
+            No. Do not assume a fee is verified unless the calculator
+            explicitly identifies it as verified. Where a fee is not
+            verified, enter the applicable fee yourself rather than
+            relying on an assumed default.
+          </p>
+        </details>
+
+        <details>
+          <summary>What if I do not know my payment provider's fee?</summary>
+          <p>
+            Check the provider's current pricing or transaction statement
+            before entering a fee. An unknown fee should not be treated
+            as a confirmed zero-cost payout.
+          </p>
+        </details>
+
+        <details>
+          <summary>What is the difference between gross income and estimated take-home?</summary>
+          <p>
+            Gross income is the amount before the deductions that apply
+            at the selected income stage. Estimated take-home is the
+            modeled amount remaining after the applicable deductions
+            and any optional planning reserve entered into the calculator.
+          </p>
+        </details>
+
+        <details>
+          <summary>How does currency conversion affect my income?</summary>
+          <p>
+            When income is converted into another currency, the exchange
+            rate and any entered FX markup affect the converted amount.
+            Your bank or provider may apply a different rate or additional
+            charges.
+          </p>
+        </details>
+
+        <details>
+          <summary>Can I enter income after platform fees have already been deducted?</summary>
+          <p>
+            Yes. Select the after-platform-fees income stage where
+            applicable. This helps prevent the same platform deduction
+            from being applied again.
+          </p>
+        </details>
+
+        <details>
+          <summary>Can I enter money that has already reached my account?</summary>
+          <p>
+            Yes. Use the Already received stage when the amount has
+            already reached your account. The calculator should not
+            deduct payout fees or convert that amount again.
+          </p>
+        </details>
+
+        <details>
+          <summary>Does this calculator tell me how much tax I owe?</summary>
+          <p>
+            No. Any optional reserve is an amount you choose for planning.
+            It is not a calculation of your actual tax liability.
+            Consult a qualified tax professional for advice about your
+            circumstances.
+          </p>
+        </details>
+
+        <details>
+          <summary>Will the estimated result exactly match my bank payout?</summary>
+          <p>
+            Not necessarily. Actual payouts can differ because of provider
+            pricing, exchange-rate spreads, timing, intermediary charges
+            and other transaction-specific adjustments.
+          </p>
+        </details>
+
+        <details>
+          <summary>Is the Creator Stack Calculator free?</summary>
+          <p>
+            Yes. The Creator Stack Calculator is available as a free
+            DollarDost tool.
+          </p>
+        </details>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="container">
+        DollarDost · Creator income tools ·
+        <a href="/">Back to DollarDost</a>
+      </div>
+    </footer>
+
+    <script>
+      import { calculateCreatorStack } from "../../lib/creator-stack/calculate";
+      import type {
+        CreatorStackInput,
+        IncomeSource,
+        FxRate,
+        TaxReserve,
+      } from "../../lib/creator-stack/types";
+
+      const form = document.querySelector<HTMLFormElement>("#creator-stack-form")!;
+      const sourcesContainer = document.querySelector<HTMLDivElement>("#income-sources")!;
+      const sourceTemplate = document.querySelector<HTMLTemplateElement>("#income-source-template")!;
+      const addSourceButton = document.querySelector<HTMLButtonElement>("#add-income-source")!;
+      const errorBox = document.querySelector<HTMLDivElement>("#form-error")!;
+      const results = document.querySelector<HTMLElement>("#results")!;
+      const taxEnabled = document.querySelector<HTMLInputElement>("#tax-enabled")!;
+      const taxFields = document.querySelector<HTMLDivElement>("#tax-fields")!;
+      let sourceCounter = 0;
+
+      const value = (root: ParentNode, field: string): string => {
+        const element = root.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-field="${field}"]`);
+        return element?.value.trim() ?? "";
+      };
+
+      const numberValue = (root: ParentNode, field: string): number => {
+        const raw = value(root, field);
+        if (raw === "") throw new Error(`Please enter ${field.replaceAll(/([A-Z])/g, " $1").toLowerCase()}.`);
+        const parsed = Number(raw);
+        if (!Number.isFinite(parsed)) throw new Error(`Invalid number for ${field}.`);
+        return parsed;
+      };
+
+      function updateSourceCard(card: HTMLElement) {
+        const category = value(card, "category");
+        const isYouTube = category === "youtube";
+        const youtubeQuestion = card.querySelector<HTMLElement>(".youtube-question")!;
+      
+        const receivedCurrency = card.querySelector<HTMLElement>("[data-received-currency]")!;
+        const platformFees = card.querySelector<HTMLElement>(".platform-fees")!;
+        const routeFields = card.querySelector<HTMLElement>(".route-fields")!;
+
+        youtubeQuestion.hidden = !isYouTube;
+
+        const selectedStage = value(card, "amountStage");
+
+        receivedCurrency.hidden = selectedStage !== "net_received";
+        platformFees.hidden = selectedStage !== "contract_amount";
+        routeFields.hidden = selectedStage === "net_received";
+
+        const sourceCurrency = value(card, "currency");
+const payoutCurrency = value(card, "payoutCurrency");
+
+const receivedCurrencySelect =
+  card.querySelector<HTMLSelectElement>('[data-field="receivedCurrency"]')!;
+
+if (selectedStage === "net_received") {
+  receivedCurrencySelect.value = sourceCurrency;
+  receivedCurrencySelect.disabled = true;
+} else {
+  receivedCurrencySelect.disabled = false;
+}
+        const reportingCurrency = (document.querySelector<HTMLSelectElement>("#reporting-currency")!).value;
+        const sourceRate = card.querySelector<HTMLInputElement>('[data-field="sourceReportingRate"]')!;
+        const payoutRate = card.querySelector<HTMLInputElement>('[data-field="payoutReportingRate"]')!;
+
+        sourceRate.required = sourceCurrency !== reportingCurrency;
+        sourceRate.disabled = sourceCurrency === reportingCurrency;
+        if (sourceRate.disabled) sourceRate.value = "";
+
+        payoutRate.required = selectedStage !== "net_received" && payoutCurrency !== reportingCurrency;
+        payoutRate.disabled = selectedStage === "net_received" || payoutCurrency === reportingCurrency;
+        if (payoutRate.disabled) payoutRate.value = "";
+
+        const noProcessing = card.querySelector<HTMLInputElement>('[data-field="noProcessingFee"]')!;
+        const processingPercent = card.querySelector<HTMLInputElement>('[data-field="processingPercent"]')!;
+        const processingFixed = card.querySelector<HTMLInputElement>('[data-field="processingFixed"]')!;
+        processingPercent.required = selectedStage !== "net_received" && !noProcessing.checked;
+        processingFixed.required = selectedStage !== "net_received" && !noProcessing.checked;
+        processingPercent.disabled = selectedStage === "net_received" || noProcessing.checked;
+        processingFixed.disabled = selectedStage === "net_received" || noProcessing.checked;
+
+        routeFields.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input, select").forEach((control) => {
+          if (control.dataset.field === "processingPercent" || control.dataset.field === "processingFixed") return;
+          control.disabled = selectedStage === "net_received";
+        });
+      }
+
+      function addSource() {
+        sourceCounter += 1;
+        const fragment = sourceTemplate.content.cloneNode(true) as DocumentFragment;
+        const card = fragment.querySelector<HTMLElement>(".source-card")!;
+        card.dataset.sourceId = `income-${sourceCounter}`;
+        card.querySelector<HTMLHeadingElement>("h3")!.textContent = `Income source ${sourceCounter}`;
+
+        card.querySelector<HTMLButtonElement>(".remove")!.addEventListener("click", () => {
+          card.remove();
+          [...sourcesContainer.querySelectorAll<HTMLElement>(".source-card")].forEach((item, index) => {
+            item.querySelector("h3")!.textContent = `Income source ${index + 1}`;
+          });
+        });
+
+        const categorySelect = card.querySelector<HTMLSelectElement>('[data-field="category"]')!;
+        const stageSelect = card.querySelector<HTMLSelectElement>('[data-field="amountStage"]')!;
+        const youtubeRadios = [...card.querySelectorAll<HTMLInputElement>('[data-field="youtubeStage"]')];
+        let selectedYoutubeRadio: HTMLInputElement | null =
+          youtubeRadios.find((radio) => radio.checked) ?? null;
+
+        categorySelect.addEventListener("change", () => {
+          if (categorySelect.value !== "youtube") {
+            youtubeRadios.forEach((radio) => {
+              radio.checked = false;
+            });
+            selectedYoutubeRadio = null;
+          }
+
+          updateSourceCard(card);
+        });
+
+        stageSelect.addEventListener("change", () => updateSourceCard(card));
+        card.querySelector<HTMLSelectElement>('[data-field="currency"]')!.addEventListener("change", () => updateSourceCard(card));
+        card.querySelector<HTMLSelectElement>('[data-field="payoutCurrency"]')!.addEventListener("change", () => updateSourceCard(card));
+
+        youtubeRadios.forEach((radio) => {
+          radio.addEventListener("click", () => {
+            if (selectedYoutubeRadio !== radio) return;
+
+            radio.checked = false;
+            selectedYoutubeRadio = null;
+          });
+
+          radio.addEventListener("change", () => {
+            youtubeRadios.forEach((otherRadio) => {
+              if (otherRadio !== radio) otherRadio.checked = false;
+            });
+
+            selectedYoutubeRadio = radio;
+          });
+        });
+        card.querySelector<HTMLInputElement>('[data-field="noProcessingFee"]')!.addEventListener("change", () => updateSourceCard(card));
+        sourcesContainer.append(fragment);
+        updateSourceCard(card);
+      }
+
+      addSourceButton.addEventListener("click", addSource);
+      document.querySelector<HTMLSelectElement>("#reporting-currency")!.addEventListener("change", () => {
+        sourcesContainer.querySelectorAll<HTMLElement>(".source-card").forEach(updateSourceCard);
+      });
+      taxEnabled.addEventListener("change", () => {
+        taxFields.hidden = !taxEnabled.checked;
+        document.querySelector<HTMLInputElement>("#tax-percent")!.required = taxEnabled.checked;
+        document.querySelector<HTMLInputElement>("#tax-eligibility-confirmed")!.required = taxEnabled.checked;
+      });
+
+      function formatMoney(amount: number, currency: string): string {
+        try {
+          return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency,
+            maximumFractionDigits: 2,
+          }).format(amount);
+        } catch {
+          return `${amount.toFixed(2)} ${currency}`;
+        }
+      }
+
+      function metric(label: string, amount: number, currency: string, highlight = false): HTMLElement {
+        const box = document.createElement("div");
+        box.className = `metric${highlight ? " highlight" : ""}`;
+        const caption = document.createElement("span");
+        caption.textContent = label;
+        const strong = document.createElement("strong");
+        strong.textContent = formatMoney(amount, currency);
+        box.append(caption, strong);
+        return box;
+      }
+
+      function renderResults(result: ReturnType<typeof calculateCreatorStack>) {
+        const metrics = document.querySelector<HTMLDivElement>("#result-metrics")!;
+        metrics.replaceChildren(
+          metric("Estimated take-home", result.estimatedTakeHome, result.reportingCurrency, true),
+          metric("Income entered", result.totalEnteredIncome, result.reportingCurrency),
+          metric("Total modeled deductions", result.totalDeductions, result.reportingCurrency),
+          metric("Platform fees", result.totalPlatformFees, result.reportingCurrency),
+          metric("FX costs", result.totalFxCost, result.reportingCurrency),
+          metric("Payment processing", result.totalPaymentProcessingFees, result.reportingCurrency),
+          metric("Tax reserve estimate", result.estimatedTaxReserve, result.reportingCurrency),
+          metric("Before tax reserve", result.amountBeforeTaxReserve, result.reportingCurrency),
+          metric("Payment-route costs", result.totalPaymentRouteCosts, result.reportingCurrency),
+        );
+
+        const breakdown = document.querySelector<HTMLDivElement>("#source-breakdown")!;
+        breakdown.replaceChildren();
+        const table = document.createElement("table");
+        table.className = "result-table";
+        const headings = ["Income source", "Entered", "Platform fee", "FX cost", "Processing", "Received"];
+        const head = document.createElement("tr");
+        headings.forEach((heading) => {
+          const th = document.createElement("th");
+          th.textContent = heading;
+          head.append(th);
+        });
+        const thead = document.createElement("thead");
+        thead.append(head);
+        const tbody = document.createElement("tbody");
+        result.sourceResults.forEach((source) => {
+          const row = document.createElement("tr");
+          const cells = [
+            source.sourceName,
+            formatMoney(source.originalAmount, source.currency),
+            formatMoney(source.platformFee, source.currency),
+            formatMoney(source.fxCost, source.payoutCurrency),
+            formatMoney(source.paymentProcessingFee, source.payoutCurrency),
+            formatMoney(source.amountReceived, source.payoutCurrency),
+          ];
+          cells.forEach((content) => {
+            const td = document.createElement("td");
+            td.textContent = content;
+            row.append(td);
+          });
+          tbody.append(row);
+        });
+        table.append(thead, tbody);
+        breakdown.append(table);
+
+        const leakBox = document.querySelector<HTMLDivElement>("#leak-breakdown")!;
+        leakBox.replaceChildren();
+        if (result.leakReport.length === 0) {
+          leakBox.textContent = "No modeled fee leakage was reported from the values entered.";
+        } else {
+          const list = document.createElement("ul");
+          list.className = "result-list";
+          result.leakReport.forEach((leak) => {
+            const item = document.createElement("li");
+            item.textContent =
+              `${leak.sourceName}: ${leak.leakType} — ${formatMoney(leak.costReporting, result.reportingCurrency)}. ${leak.action}` +
+              (leak.isEstimate ? " (Estimate / unverified input)" : "");
+            list.append(item);
+          });
+          leakBox.append(list);
+        }
+
+        const complianceBox = document.querySelector<HTMLDivElement>("#compliance-breakdown")!;
+        complianceBox.replaceChildren();
+        if (result.complianceChecklist.length === 0) {
+          complianceBox.textContent = "No verified compliance rules were supplied to this calculation. Check the rules that apply to your own circumstances.";
+        } else {
+          const list = document.createElement("ul");
+          list.className = "result-list";
+          result.complianceChecklist.forEach((entry) => {
+            const item = document.createElement("li");
+            item.textContent = `${entry.label}: ${entry.appliesComputed ? "Potentially applies — review" : "Not matched by the entered conditions"} (${entry.jurisdiction}). ${entry.why}`;
+            list.append(item);
+          });
+          complianceBox.append(list);
+        }
+
+        results.style.display = "block";
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function buildInput(): CreatorStackInput {
+        const reportingCurrency = document.querySelector<HTMLSelectElement>("#reporting-currency")!.value;
+        const cards = [...sourcesContainer.querySelectorAll<HTMLElement>(".source-card")];
+        if (cards.length === 0) throw new Error("Add at least one income source.");
+
+        const fxRatesToReporting: Record<string, FxRate> = {};
+        const addReportingRate = (currency: string, rawRate: string) => {
+          if (currency === reportingCurrency) return;
+          if (!rawRate) throw new Error(`Enter the ${currency} to ${reportingCurrency} reporting exchange rate.`);
+          const rate = Number(rawRate);
+          if (!Number.isFinite(rate) || rate <= 0) throw new Error(`The ${currency} to ${reportingCurrency} rate must be greater than zero.`);
+          fxRatesToReporting[`${currency}_${reportingCurrency}`] = {
+            rate,
+            verificationStatus: "user_entered",
+            note: "Exchange rate entered by the user.",
+          };
+        };
+
+        const incomeSources: IncomeSource[] = cards.map((card, index) => {
+          const category = value(card, "category") as IncomeSource["category"];
+          let amountStage = value(card, "amountStage") as IncomeSource["amountStage"];
+
+
+          const currency = value(card, "currency").toUpperCase();
+          const amount = numberValue(card, "amount");
+          const clientCountryCode = value(card, "clientCountryCode").toUpperCase();
+          const isUsChoice = value(card, "isUsSource");
+          const isUsSource = isUsChoice === "unknown" ? undefined : isUsChoice === "yes";
+
+          let platformFeePercent = 0;
+          let platformFixedFee = 0;
+          let platformFixedFeeCurrency: "source" | "payout" = "source";
+
+          if (amountStage === "contract_amount") {
+            platformFeePercent = numberValue(card, "platformFeePercent");
+            platformFixedFee = numberValue(card, "platformFixedFee");
+            platformFixedFeeCurrency = value(card, "platformFixedFeeCurrency") as "source" | "payout";
+          }
+
+          const source: IncomeSource = {
+            id: card.dataset.sourceId || `income-${index + 1}`,
+            name: value(card, "name"),
+            category,
+            amount,
+            currency,
+            amountStage,
+            platformFeePercent,
+            platformFixedFee,
+            platformFixedFeeCurrency,
+            clientCountryCode,
+            clientType: value(card, "clientType") as IncomeSource["clientType"],
+            isUsSource,
+          };
+
+          if (amountStage === "net_received") {
+            const receivedCurrency = value(card, "receivedCurrency").toUpperCase() || currency;
+            source.receivedCurrency = receivedCurrency;
+            addReportingRate(receivedCurrency, value(card, "sourceReportingRate"));
+          } else {
+            const payoutCurrency = value(card, "payoutCurrency").toUpperCase();
+            addReportingRate(currency, value(card, "sourceReportingRate"));
+            addReportingRate(payoutCurrency, value(card, "payoutReportingRate"));
+
+            const noProcessingFee = card.querySelector<HTMLInputElement>('[data-field="noProcessingFee"]')!.checked;
+            let processingFee: IncomeSource["paymentRoute"] extends infer _T ? import("../../lib/creator-stack/types").PaymentFeeModel : never;
+
+            if (noProcessingFee) {
+              processingFee = { kind: "none" };
+            } else {
+              const percent = numberValue(card, "processingPercent");
+              const fixedAmount = numberValue(card, "processingFixed");
+              processingFee = {
+                kind: "percentage_plus_fixed",
+                percentageFee: {
+                  percent,
+                  basis: value(card, "processingBasis") as "source_amount" | "payout_amount",
+                },
+                fixedFee: {
+                  amount: fixedAmount,
+                  currency: value(card, "processingFixedCurrency") as "source" | "payout",
+                },
+              };
+            }
+
+            source.paymentRoute = {
+              providerName: value(card, "providerName"),
+              payoutCountryCode: value(card, "payoutCountryCode").toUpperCase(),
+              payoutCurrency,
+              referenceExchangeRate: numberValue(card, "referenceExchangeRate"),
+              fxMarkupPercent: numberValue(card, "fxMarkupPercent"),
+              processingFee,
+              availability: "unknown",
+              availabilityNote: "Availability has not been independently confirmed.",
+              verificationStatus: "user_entered",
+              note: "Payment route values entered by the user; not provider-verified.",
+            };
+          }
+
+          return source;
+        });
+
+        const taxIsEnabled = taxEnabled.checked;
+        const taxPercentInput = document.querySelector<HTMLInputElement>("#tax-percent")!;
+        const eligibilityConfirmed = document.querySelector<HTMLInputElement>("#tax-eligibility-confirmed")!.checked;
+
+        if (taxIsEnabled && !eligibilityConfirmed) {
+          throw new Error("To include a tax reserve estimate, independently confirm the tax treatment and eligibility for your planning assumption.");
+        }
+
+        const taxReserve: TaxReserve = {
+          enabled: taxIsEnabled,
+          percent: taxIsEnabled ? Number(taxPercentInput.value) : 0,
+          base: document.querySelector<HTMLSelectElement>("#tax-base")!.value as TaxReserve["base"],
+          verificationStatus: "user_entered",
+          eligibility: {
+            status: taxIsEnabled && eligibilityConfirmed ? "confirmed" : "not_confirmed",
+            note: "User-entered planning reserve. This is not a determination of tax payable.",
+          },
+          note: "Planning estimate only; not tax payable.",
+        };
+
+        return {
+          incomeSources,
+          reportingCurrency,
+          taxReserve,
+          fxRatesToReporting,
+          future: {
+            whatIfEnabled: false,
+            exportEnabled: false,
+          },
+        };
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        errorBox.style.display = "none";
+        results.style.display = "none";
+
+        try {
+          if (!form.reportValidity()) return;
+          const input = buildInput();
+          const result = calculateCreatorStack(input);
+          renderResults(result);
+        } catch (error) {
+          errorBox.textContent = error instanceof Error ? error.message : "Something went wrong. Check your entries and try again.";
+          errorBox.style.display = "block";
+          errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+
+      addSource();
+    </script>
+  </body>
+</html>
+
